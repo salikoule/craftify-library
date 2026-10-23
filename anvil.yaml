@@ -3,6 +3,9 @@ dependencies:
 - dep_id: dep_d6bjyrizg8vut
   resolution_hints: {app_id: TGQCF3WT6FVL2EM2, name: Tabulator, package_name: tabulator}
   version: {version_tag: v3.3.2}
+- dep_id: dep_kfkrna97mklbm
+  resolution_hints: {app_id: C6ZZPAPN4YYF5NVJ, name: Anvil Extras, package_name: anvil_extras}
+  version: {version_tag: v3.6.3}
 metadata: {description: Craftify library for Anvil client apps., title: craftify-library}
 name: craftify-library
 native_deps:
