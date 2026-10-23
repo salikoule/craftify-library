@@ -13,6 +13,7 @@ native_deps:
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
     <script src="_/theme/echarts_theme.js"></script>
+    <link rel="stylesheet" href="_/theme/craftify-full-theme.css">
     <script>
     function getScrollPosition(selector) {
       return $(selector).scrollTop();
