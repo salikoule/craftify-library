@@ -1,1 +1,26 @@
-null
+- description: App bar and sidebar layout (iPac / Craftify standard).
+  form:
+    class_name: Form
+    code: |
+      from ._anvil_designer import $NAME$Template
+      from anvil import *
+
+      class $NAME$($NAME$Template):
+
+        def __init__(self, **properties):
+          self.init_components(**properties)
+    components:
+    - layout_properties: {slot: default}
+      name: content_panel
+      properties: {}
+      type: ColumnPanel
+    - layout_properties: {slot: nav-right}
+      name: navbar_links
+      properties: {}
+      type: FlowPanel
+    container:
+      properties: {html: '@theme:standard-page.html'}
+      type: HtmlTemplate
+    is_package: true
+  img: img/form-templates/material-design.png
+  name: Standard Page

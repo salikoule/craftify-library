@@ -4,4 +4,4 @@ from anvil import *
 
 class Form1(Form1Template):
     def __init__(self, **properties):
-        super().__init__(**properties)
+        self.init_components(**properties)

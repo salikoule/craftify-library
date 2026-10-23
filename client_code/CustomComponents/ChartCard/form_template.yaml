@@ -1,0 +1,13 @@
+components:
+- layout_properties: {full_width_row: true, slot: chart}
+  name: chart_host
+  properties: {spacing_above: none, spacing_below: none}
+  type: ColumnPanel
+container:
+  properties: {html: '@theme:chart-card.html'}
+  type: HtmlTemplate
+custom_component: true
+is_package: true
+properties:
+- {default_value: '', name: title, type: string}
+- {default_value: '', name: subtitle, type: string}

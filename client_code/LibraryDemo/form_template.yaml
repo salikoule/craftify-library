@@ -1,0 +1,13 @@
+components:
+- layout_properties: {slot: title}
+  name: title_label
+  properties: {bold: true, font_size: 18, text: Craftify Library}
+  type: Label
+- layout_properties: {slot: default}
+  name: main_panel
+  properties: {spacing_above: medium}
+  type: ColumnPanel
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true

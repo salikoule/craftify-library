@@ -1,0 +1,57 @@
+<style>
+  .cc-page {
+    --navy: #1e3a5f;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --font: Montserrat, system-ui, sans-serif;
+    font-family: var(--font);
+    color: #0f172a;
+    width: 100%;
+    margin: 0;
+  }
+  .cc-page,
+  .cc-page * { box-sizing: border-box; }
+
+  .anvil-html-component:has(.cc-page),
+  .anvil-html-component:has(.cc-page) > .anvil-html-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    background: transparent !important;
+  }
+
+  .cc-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .cc-head {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .cc-head h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    color: var(--navy);
+  }
+  .cc-head p {
+    margin: 3px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .cc-head p.is-empty { display: none; }
+  .cc-chart { width: 100%; min-height: 200px; padding: 4px 8px 8px; }
+</style>
+<div class="cc-page">
+  <div class="cc-card">
+    <div class="cc-head">
+      <h3 anvil-name="title"></h3>
+      <p anvil-name="subtitle"></p>
+    </div>
+    <div class="cc-chart" anvil-slot="chart"></div>
+  </div>
+</div>

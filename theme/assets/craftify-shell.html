@@ -1,0 +1,596 @@
+<style>
+  /* Scoped tokens — same approach as the API docs HtmlTemplate page */
+  .ds-page {
+    --navy: #1e3a5f;
+    --navy-deep: #0f2744;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --ok: #059669;
+    --ok-bg: #ecfdf5;
+    --warn: #d97706;
+    --warn-bg: #fff7ed;
+    --off: #94a3b8;
+    --off-bg: #f1f5f9;
+    --font: Montserrat, system-ui, sans-serif;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 8px 8px 32px;
+    font-family: var(--font);
+    color: #0f172a;
+    background: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ds-table-band {
+    width: 100%;
+    padding: 0 8px 32px;
+    box-sizing: border-box;
+  }
+  .ds-table-band.ds-off { display: none !important; }
+  .ds-table-band .ds-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .ds-page,
+  .ds-page * { box-sizing: border-box; }
+
+  .anvil-html-component:has(.ds-page),
+  .anvil-html-component:has(.ds-page) > .anvil-html-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    background: transparent !important;
+  }
+
+  .ds-page .ds-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .ds-page .ds-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .ds-page h2 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--navy);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+  .ds-page h3 {
+    margin: 0;
+    font-size: 15px;
+    color: var(--navy);
+    font-weight: 650;
+  }
+  .ds-page .ds-marks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .ds-page .ds-run { position: relative; }
+  .ds-page .ds-run > button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: 30px !important;
+    min-height: 0 !important;
+    padding: 0 8px 0 10px !important;
+    border-radius: 8px !important;
+    border: 1px solid #a7f3d0 !important;
+    background: #fff !important;
+    color: #0f2744 !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+    line-height: 1.2 !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+    box-shadow: inset 3px 0 0 #1e3a5f !important;
+  }
+  .ds-page .ds-run.reports > button { box-shadow: inset 3px 0 0 #1d4ed8 !important; }
+  .ds-page .ds-run.bad > button {
+    border-color: #fecaca !important;
+    background: #fef2f2 !important;
+    box-shadow: inset 3px 0 0 #b91c1c !important;
+  }
+  .ds-page .ds-run > button:hover { border-color: #9bb6d3; }
+  .ds-page .ds-run.bad > button:hover { border-color: #f0a8a8; }
+  .ds-page .ds-run > button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+  .ds-page .ds-run-glyph { width: 16px; height: 16px; flex: 0 0 auto; }
+  .ds-page .ds-run-when { font-weight: 600; color: #047857; }
+  .ds-page .ds-run.bad .ds-run-when { color: #b91c1c; }
+  .ds-page .ds-run-tip {
+    display: none;
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 360px;
+    max-height: min(70vh, 520px);
+    overflow: auto;
+    padding: 14px 14px 12px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(15, 39, 68, 0.14);
+    text-align: left;
+  }
+  .ds-page .ds-run:hover .ds-run-tip,
+  .ds-page .ds-run:focus-within .ds-run-tip { display: block; }
+  .ds-page .ds-run-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ds-page .ds-run-kicker {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+  .ds-page .ds-run-kicker.reports { color: #1d4ed8; }
+  .ds-page .ds-run-tip h3 {
+    margin: 3px 0 0;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: #0f2744;
+    white-space: nowrap;
+  }
+  .ds-page .ds-run-pill {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .ds-page .ds-run-pill.bad { background: #fef2f2; color: #b91c1c; }
+  .ds-page .ds-run-who {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #475569;
+  }
+  .ds-page .ds-run-alert {
+    margin: 10px 0 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #fef2f2;
+    color: #7f1d1d;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .ds-page .ds-run-groups { margin-top: 12px; }
+  .ds-page .ds-run-group + .ds-run-group { margin-top: 10px; }
+  .ds-page .ds-run-group-head,
+  .ds-page .ds-run-step {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ds-page .ds-run-group-head {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+  .ds-page .ds-run-step {
+    margin-top: 3px;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+  }
+  .ds-page .ds-run-group-head b,
+  .ds-page .ds-run-step b {
+    font-weight: 650;
+    color: #0f2744;
+    white-space: nowrap;
+  }
+  .ds-page .ds-run-step b { font-weight: 600; color: #334155; }
+  .ds-page .ds-run-id {
+    margin: 12px 0 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+  }
+  .ds-page .ds-help {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ds-page .ds-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ds-page .ds-tip {
+    position: relative;
+  }
+  .ds-page .ds-tip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 20;
+    width: max-content;
+    max-width: 240px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--navy-deep);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+  }
+  .ds-page .ds-tip:hover::after,
+  .ds-page .ds-tip:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .ds-page button.ds-btn {
+    font-family: inherit !important;
+    border: 1px solid var(--line) !important;
+    background: #fff !important;
+    color: var(--navy) !important;
+    border-radius: 999px !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    text-transform: none !important;
+    min-height: 0 !important;
+  }
+  .ds-page button.ds-btn.primary {
+    background: var(--navy) !important;
+    color: #fff !important;
+    border-color: var(--navy) !important;
+  }
+  .ds-page button.ds-btn.ghost:hover {
+    border-color: var(--navy) !important;
+    background: #f0f6fc !important;
+  }
+  .ds-page button.ds-btn:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+  }
+  .ds-page .ds-workspace { padding-bottom: 10px; }
+  .ds-page .ds-workspace-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .ds-page .ds-chips,
+  .ds-page .ds-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ds-page button.ds-chip {
+    border: 1px solid var(--line) !important;
+    background: #fff !important;
+    border-radius: 999px !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+  }
+  .ds-page button.ds-chip.active {
+    background: #e8f1fb !important;
+    color: var(--navy) !important;
+    border-color: #c5d8ef !important;
+  }
+  .ds-page .ds-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.2fr) 110px minmax(180px, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 8px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .ds-page .ds-row.disabled { opacity: 0.55; }
+  .ds-page .ds-name { font-size: 13px; font-weight: 650; color: #1e293b; }
+  .ds-page .ds-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .ds-page .ds-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #eef2f7;
+    color: #475569;
+    width: fit-content;
+  }
+  .ds-page .ds-status { font-size: 12px; color: #334155; }
+  .ds-page .ds-status b { font-weight: 650; }
+  .ds-page .ds-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .ds-page .ds-pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .ds-page .ds-pill.warn { background: var(--warn-bg); color: var(--warn); }
+  .ds-page .ds-pill.off { background: var(--off-bg); color: var(--off); }
+  .ds-page .ds-row-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .ds-page .ds-row-actions button.ds-btn { min-width: 88px; }
+
+  .ds-page .ds-page-tabs,
+  .ds-page .ds-tabs {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    background: #f1f5f9;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+  .ds-page .ds-off { display: none !important; }
+  .ds-page .ds-tabs { margin: 12px 0; }
+  .ds-page button.ds-tab {
+    appearance: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    border-radius: 999px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+    line-height: 1.2 !important;
+    color: var(--muted) !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  .ds-page button.ds-tab.active {
+    background: var(--navy) !important;
+    color: #fff !important;
+  }
+  .ds-page .ds-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+  }
+  .ds-page .ds-count {
+    display: inline-flex;
+    min-width: 18px;
+    justify-content: center;
+    margin-left: 6px;
+    border-radius: 999px;
+    padding: 0 6px;
+    font-size: 11px;
+    background: #e8f1fb;
+    color: var(--navy);
+  }
+  .ds-page button.ds-tab.active .ds-count {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+  }
+  .ds-page .ds-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .ds-page .ds-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ds-page .ds-stat {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-width: 88px;
+  }
+  .ds-page .ds-stat b { display: block; font-size: 16px; color: var(--navy); }
+  .ds-page .ds-stat span { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .ds-page table.ds-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ds-page table.ds-table th,
+  .ds-page table.ds-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #eef2f6;
+    text-align: left;
+  }
+  .ds-page table.ds-table th {
+    color: var(--muted);
+    font-weight: 650;
+    background: #f8fafc;
+  }
+  .ds-page .ds-file { font-weight: 650; color: #1e293b; }
+  .ds-page th.ds-uploaded,
+  .ds-page td.ds-uploaded {
+    white-space: nowrap;
+    min-width: 168px;
+    width: 168px;
+  }
+  .ds-page td.ds-status-actions { white-space: nowrap; text-align: right; }
+  .ds-page .ds-dl {
+    position: relative;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .ds-page .ds-dl-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 4;
+    min-width: 112px;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  }
+  .ds-page .ds-dl.open .ds-dl-menu { display: block; }
+  .ds-page .ds-dl-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: var(--navy);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .ds-page .ds-dl-menu button:hover { background: #f0f6fc; }
+  .ds-page .ds-pill.danger { background: #fef2f2; color: #dc2626; }
+  .ds-page .ds-empty {
+    border: 1px dashed #c5d8ef;
+    background: #f8fbff;
+    border-radius: 12px;
+    padding: 22px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .ds-page .ds-empty strong { display: block; color: var(--ok); font-size: 14px; margin-bottom: 4px; }
+  .ds-page .ds-group {
+    border-top: 1px solid #f1f5f9;
+    padding: 10px 4px;
+    cursor: pointer;
+  }
+  .ds-page .ds-group-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--navy);
+  }
+  .ds-page .ds-group-body { display: none; padding: 8px 0 0 8px; }
+  .ds-page .ds-group.open .ds-group-body { display: block; }
+
+  @media (max-width: 800px) {
+    .ds-page .ds-row { grid-template-columns: 1fr; gap: 6px; }
+    .ds-page .ds-row-actions { justify-content: flex-start; }
+  }
+</style>
+
+<div anvil-name="ds_page">
+<div class="ds-page">
+  <section class="ds-card ds-toolbar">
+    <div>
+      <h2>Data Sheets</h2>
+      <div class="ds-marks" anvil-name="run_marks"></div>
+    </div>
+    <div class="ds-actions" anvil-name="toolbar">
+      <button type="button" class="ds-btn primary ds-tip" data-action="recalc" data-tooltip="Rerun all simulations after uploads. Admin only; this can take a few minutes.">Recalculate All</button>
+      <button type="button" class="ds-btn ghost ds-tip" data-action="reports" data-tooltip="Update the daily control reports from the latest uploaded data.">Run Reports</button>
+      <button type="button" class="ds-btn ghost ds-tip" data-action="api" anvil-name="api_btn" data-tooltip="Fetch the latest client data from the API and store it here.">Fetch API Data</button>
+      <button type="button" class="ds-btn ghost ds-tip" data-action="snapshot" data-tooltip="Take a snapshot of the current Demand Plan.">Snapshot</button>
+      <button type="button" class="ds-btn ghost ds-tip" data-action="integrity" data-tooltip="Download the data integrity report for uploaded sheets.">Integrity Report</button>
+    </div>
+  </section>
+
+  <div class="ds-page-tabs" anvil-name="page_tabs">
+    <button type="button" class="ds-tab active" data-page="library">Library</button>
+    <button type="button" class="ds-tab" data-page="status">Upload status <span class="ds-count" anvil-name="status_count"></span></button>
+    <button type="button" class="ds-tab" data-page="checks">Checks <span class="ds-count" anvil-name="checks_count"></span></button>
+    <button type="button" class="ds-tab" data-page="view">View Data</button>
+  </div>
+
+  <div anvil-name="library_wrap">
+    <section class="ds-card ds-workspace">
+      <div class="ds-workspace-head">
+        <h3>Upload library</h3>
+        <div class="ds-chips" anvil-name="chips"></div>
+      </div>
+      <div anvil-name="rows"></div>
+    </section>
+  </div>
+
+  <div class="ds-off" anvil-name="view_wrap">
+    <section class="ds-card">
+      <h3>View Data</h3>
+      <p class="ds-help">Pick a sheet to load it.</p>
+      <div class="ds-tabs" anvil-name="tabs"></div>
+    </section>
+  </div>
+
+  <div class="ds-off" anvil-name="status_wrap">
+    <section class="ds-card">
+      <div class="ds-card-head">
+        <div>
+          <h3>Upload status</h3>
+          <p class="ds-help">What actually landed — API pulls, BPA files, and manual uploads. Download a stored file from here.</p>
+        </div>
+        <div class="ds-stats" anvil-name="status_stats"></div>
+      </div>
+      <div anvil-name="status_table"></div>
+    </section>
+  </div>
+
+  <div class="ds-off" anvil-name="checks_wrap">
+    <section class="ds-card">
+      <div class="ds-card-head">
+        <div>
+          <h3>Location check</h3>
+          <p class="ds-help">Locations that exist in Location Config but not Master, or the other way around.</p>
+        </div>
+        <span class="ds-pill off" anvil-name="location_pill">Checking…</span>
+      </div>
+      <div anvil-name="location_body"></div>
+    </section>
+    <section class="ds-card">
+      <div class="ds-card-head">
+        <div>
+          <h3>Missing master data</h3>
+          <p class="ds-help">Products seen in control or uploads that are not on the item master. Grouped by location.</p>
+        </div>
+        <div class="ds-actions">
+          <span class="ds-pill off" anvil-name="missing_pill">Checking…</span>
+          <button type="button" class="ds-btn primary" data-action="missing-download">Download Excel</button>
+        </div>
+      </div>
+      <div anvil-name="missing_body"></div>
+    </section>
+    <div class="ds-hidden" anvil-slot="checks"></div>
+  </div>
+
+  <div class="ds-hidden" anvil-slot="hidden"></div>
+</div>
+<div class="ds-table-band ds-off" anvil-name="view_table">
+  <section class="ds-card">
+    <div anvil-slot="tabulator"></div>
+  </section>
+</div>
+</div>

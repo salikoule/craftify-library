@@ -1,0 +1,24 @@
+components: []
+container:
+  event_bindings: {show: form_show}
+  properties:
+    html: |
+      <div anvil-name="echart_div" class="craftify-echart-host"></div>
+      <script>
+      function craftifyDefineChart(chartId) {
+        var chartDom = document.getElementById(chartId);
+        if (!window.echarts) {
+          throw new Error("ECharts is not loaded. Add echarts.min.js to native_deps head_html.");
+        }
+        return echarts.init(chartDom, null, { renderer: "canvas" });
+      }
+      </script>
+  type: HtmlTemplate
+custom_component: true
+events: []
+is_package: true
+properties:
+- {default_binding_prop: true, default_value: 300px, name: height, type: string}
+- {default_value: 100%, name: width, type: string}
+- {default_value: true, name: resize, type: boolean}
+toolbox_item: {title: EChart}

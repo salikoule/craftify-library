@@ -1,8 +1,28 @@
 unique_ids:
   assets:
+    chart-card.html: '1792755838632.4835877633443355'
+    craftify-shell.html: '1792755838633.992677779740932'
+    echarts_theme.js: '1792755838634.14736826733478603'
+    kpi-card.html: '1792755838634.7828440759073568'
+    standard-page.html: '1792755838634.7452123552063703'
+    tabulator_styles.css: '1792755838635.4654083259147226'
     theme.css: HYM4VLZDIPBHUXTRIMKSI3WL2XHIITSQ
   forms:
+    CustomComponents.ChartCard: '1792756177155.5105592050057502'
+    CustomComponents.EChart: '1792756177156.7104288260432239'
+    CustomComponents.KpiCard: '1792756177157.8127881174301705'
     Form1: VG4EGN3G66BMVH7MOACYIYGARLOOO7UC
-  modules: {}
+    LibraryDemo: '1792756177158.5783053040124773'
+  modules:
+    CraftifyUtils: '1792756177153.2694134643408208'
+    CraftifyUtils.ErrorHandling: '1792756177153.6422382121195895'
+    CraftifyUtils.ScrollUtils: '1792756177153.06898062868285926'
+    CraftifyUtils.constants: '1792756177153.48960687593759555'
+    CraftifyUtils.echarts_theme: '1792756177154.32503991322923065'
+    CraftifyUtils.tabulator_support: '1792756177154.849920626713827'
+    CustomComponents: '1792756177157.2341673813027575'
+    Startup: '1792756177158.13006216971941253'
   scripts: {}
-  server_modules: {}
+  server_modules:
+    CraftifyAuth: '1792756177159.13743800969570252'
+    CraftifyError: '1792756177159.646988827629544'

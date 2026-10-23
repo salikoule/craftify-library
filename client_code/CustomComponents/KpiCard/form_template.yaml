@@ -1,0 +1,18 @@
+container:
+  properties: {html: '@theme:kpi-card.html'}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {default_event: true, name: click}
+- {name: metrics_click}
+is_package: true
+properties:
+- {default_binding_prop: true, default_value: '', name: title, type: string}
+- {default_value: —, name: value, type: string}
+- {default_value: '', name: subtitle, type: string}
+- {default_value: '', name: tone, type: string}
+- {default_value: '', name: icon, type: string}
+- {default_value: '', name: icon_color, type: string}
+- {default_value: false, name: selected, type: boolean}
+- {default_value: true, name: enabled, type: boolean}
+- {default_value: false, name: clickable, type: boolean}
