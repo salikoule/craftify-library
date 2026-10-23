@@ -1,7 +1,7 @@
 allow_embedding: false
-metadata: {description: craftify library, title: craftify-platform}
-name: craftify-platform
-package_name: craftify_platform
+metadata: {description: craftify library, title: craftify-library}
+name: craftify-library
+package_name: craftify_library
 runtime_options:
   client_version: '3'
   server_spec: {base: python314}
