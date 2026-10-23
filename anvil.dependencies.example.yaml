@@ -1,0 +1,6 @@
+# Copy into anvil.yaml ONLY after Tabulator + Anvil Extras are green in IDE → Settings → Dependencies.
+dependencies:
+- resolution_hints: {app_id: C6ZZPAPN4YYF5NVJ, name: Anvil Extras, package_name: anvil_extras}
+  version: {version_tag: v3.6.3}
+- resolution_hints: {app_id: TGQCF3WT6FVL2EM2, name: Tabulator, package_name: tabulator}
+  version: {version_tag: v3.3.2}
