@@ -28,3 +28,19 @@ def craftify_user_has_role(role_name: str) -> bool:
 def craftify_require_role(role_name: str):
     if not craftify_user_has_role(role_name):
         raise AuthError(f"{role_name.title()} role required.")
+
+
+@anvil.server.callable
+def craftify_require_user():
+    user = anvil.users.get_user()
+    if user is None:
+        raise AuthError("Sign in required.")
+    return user
+
+
+@anvil.server.callable
+def craftify_current_user_email() -> str | None:
+    user = anvil.users.get_user()
+    if user is None:
+        return None
+    return user["email"]

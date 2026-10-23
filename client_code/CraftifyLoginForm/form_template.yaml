@@ -1,0 +1,29 @@
+components:
+- layout_properties: {full_width_row: true}
+  name: title
+  properties: {align: center, bold: true, font_size: 22, text: Sign in}
+  type: Label
+- layout_properties: {full_width_row: true}
+  name: email_box
+  properties: {label: Email, placeholder: you@example.com}
+  type: TextBox
+- layout_properties: {full_width_row: true}
+  name: password_box
+  properties: {hide_text: true, label: Password}
+  type: TextBox
+- layout_properties: {full_width_row: true}
+  name: login_btn
+  properties: {align: center, role: primary-color, text: Log in}
+  type: Button
+- layout_properties: {full_width_row: true}
+  name: signup_btn
+  properties: {align: center, role: secondary-color, text: Create account}
+  type: Button
+- layout_properties: {full_width_row: true}
+  name: error_label
+  properties: {align: center, foreground: 'theme:Error', visible: false}
+  type: Label
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true
