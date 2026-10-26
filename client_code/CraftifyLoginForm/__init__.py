@@ -4,10 +4,20 @@ import anvil.js
 import anvil.users
 from anvil.js import get_dom_node
 
+_GOOGLE_ICON = (
+    "data:image/svg+xml,"
+    "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E"
+    "%3Cpath fill='%23FFC107' d='M43.6 20.5H42V20H24v8h11.3C33.7 33.7 29.3 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.3 0 6.3 1.2 8.6 3.3l5.7-5.7C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.3-.4-3.5z'/%3E"
+    "%3Cpath fill='%23FF3D00' d='M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.3 0 6.3 1.2 8.6 3.3l5.7-5.7C34.6 5.1 29.6 3 24 3 16.3 3 9.7 7.3 6.3 14.7z'/%3E"
+    "%3Cpath fill='%234CAF50' d='M24 45c5.4 0 10.3-2.1 14-5.4l-6.5-5.5C29.3 35.7 26.8 37 24 37c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 40.6 16.2 45 24 45z'/%3E"
+    "%3Cpath fill='%231976D2' d='M43.6 20.5H42V20H24v8h11.3c-1.1 3.2-3.5 5.7-6.6 7.1l.1.1 6.5 5.5C39.1 38.6 45 33 45 24c0-1.2-.1-2.3-.4-3.5z'/%3E"
+    "%3C/svg%3E"
+)
+
 
 class CraftifyLoginForm(CraftifyLoginFormTemplate):
     def __init__(self, redirect_form=None, brand_text="Craftify", brand_sub="Sign in to continue",
-                 copyright="© Craftify", allow_signup=True, **properties):
+                 copyright="© Craftify", allow_signup=True, allow_google=True, **properties):
         self._redirect_form = redirect_form
         self.init_components(**properties)
         self.brand_title.text = brand_text or "Craftify"
@@ -16,7 +26,10 @@ class CraftifyLoginForm(CraftifyLoginFormTemplate):
         self.site_link.text = brand_sub or (brand_text or "craftify")
         self.copyright_link.text = copyright or ""
         self.signup_btn.visible = allow_signup
-        self.or_divider.visible = allow_signup
+        self.google_login_btn.visible = allow_google
+        self.google_login_btn.icon = _GOOGLE_ICON
+        self.or_divider.visible = allow_signup or allow_google
+        self.or_divider.text = "or continue with" if allow_google else "or"
         self._resize_handler = None
 
     def _go_next(self):
@@ -96,6 +109,25 @@ class CraftifyLoginForm(CraftifyLoginFormTemplate):
             self._show_error(str(e) or "Could not create the account.")
             return
         self._go_next()
+
+    def google_login_btn_click(self, **event_args):
+        self.error_label.visible = False
+        try:
+            user = anvil.users.login_with_google(remember=True)
+        except anvil.users.AuthenticationFailed:
+            if not self.signup_btn.visible:
+                self._show_error("Google sign-in failed.")
+                return
+            try:
+                user = anvil.users.signup_with_google(remember=True)
+            except Exception as e:
+                self._show_error(str(e) or "Could not create an account with Google.")
+                return
+        except Exception as e:
+            self._show_error(str(e) or "Google sign-in failed.")
+            return
+        if user:
+            self._go_next()
 
     def forgot_password_link_click(self, **event_args):
         email = (self.email_textbox.text or "").strip()

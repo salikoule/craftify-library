@@ -70,8 +70,13 @@ components:
       type: Label
     - layout_properties: {full_width_row: true}
       name: or_divider
-      properties: {align: center, role: login-divider, spacing_above: small, spacing_below: small, text: or}
+      properties: {align: center, role: login-divider, spacing_above: small, spacing_below: small, text: or continue with}
       type: Label
+    - event_bindings: {click: google_login_btn_click}
+      layout_properties: {full_width_row: true}
+      name: google_login_btn
+      properties: {align: center, role: login-sso-btn, spacing_above: none, spacing_below: small, text: Google}
+      type: Button
     - event_bindings: {click: signup_btn_click}
       layout_properties: {full_width_row: true}
       name: signup_btn
