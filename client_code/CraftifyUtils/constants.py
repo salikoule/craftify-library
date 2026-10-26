@@ -1,3 +1,4 @@
+from routing import router
 """Shared constants for Craftify client apps (iPac-aligned palette and dates)."""
 
 import datetime

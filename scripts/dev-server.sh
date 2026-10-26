@@ -80,4 +80,6 @@ exec "$SERVER" \
   --dep-id dep_d6bjyrizg8vut=tabulator \
   --dep-id dep_kfkrna97mklbm=anvil_extras \
   --dep-id 3PIDO5P3H4VPEMPL=routing \
-  --dep-id dep_routing=routing
+  --dep-id dep_routing=routing \
+  --dep-id dep_3cbnzlajrrq4tg=routing \
+  --dep-id dep_2lwdiwk1dh75u=routing

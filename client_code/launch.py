@@ -1,3 +1,4 @@
+from routing import router
 from craftify_library.CraftifyRouting import launch
 
 if __name__ == "__main__":

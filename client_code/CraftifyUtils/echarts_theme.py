@@ -1,3 +1,4 @@
+from routing import router
 """Global visual defaults for every Apache ECharts chart in Craftify.
 
 ECharts paints onto a canvas, so CSS cannot round bars. This module patches

@@ -1,3 +1,4 @@
+from routing import router
 # flake8: noqa: F401
 """Tabulator + ECharts defaults. Call ``configure()`` from a form (e.g. LibraryDemo), not at app import."""
 

@@ -5,6 +5,7 @@ import uuid
 from anvil.js import window
 
 from ._anvil_designer import EChartTemplate
+from routing import router
 
 
 def _apply_theme(option):

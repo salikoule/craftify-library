@@ -1,3 +1,4 @@
+from routing import router
 # flake8: noqa: F401
 """Official Anvil URL routing for every Craftify app.
 

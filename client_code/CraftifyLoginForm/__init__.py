@@ -1,5 +1,6 @@
 from ._anvil_designer import CraftifyLoginFormTemplate
 from anvil import *
+from routing import router
 import anvil.js
 import anvil.users
 from anvil.js import get_dom_node

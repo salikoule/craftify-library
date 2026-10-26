@@ -1,3 +1,4 @@
+from routing import router
 """Shared Tabulator loader markup (styled in theme.css)."""
 
 CRAFTIFY_TABULATOR_LOADER_HTML = (

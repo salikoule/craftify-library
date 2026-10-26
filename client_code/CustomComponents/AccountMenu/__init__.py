@@ -1,4 +1,5 @@
 from ._anvil_designer import AccountMenuTemplate
+from routing import router
 from anvil.js import get_dom_node
 from anvil.js.window import setTimeout
 import anvil.users

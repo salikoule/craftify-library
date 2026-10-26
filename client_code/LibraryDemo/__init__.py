@@ -1,6 +1,7 @@
 from ..Startup import configure as configure_craftify_client
 from ._anvil_designer import LibraryDemoTemplate
 from anvil import *
+from routing import router
 from tabulator.Tabulator import Tabulator
 from ..CustomComponents.EChart import EChart
 

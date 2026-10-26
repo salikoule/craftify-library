@@ -1,3 +1,4 @@
+from routing import router
 import anvil
 from anvil.js.window import jQuery as _S
 
