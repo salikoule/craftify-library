@@ -58,6 +58,7 @@ ensure_dep tabulator_github https://github.com/anvilistas/tabulator.git v3.3.1
 ln -sfn tabulator_github "$WORKSPACE/tabulator"
 ensure_dep anvil_extras_github https://github.com/anvilistas/anvil-extras.git v3.6.3
 ln -sfn anvil_extras_github "$WORKSPACE/anvil_extras"
+ensure_dep routing https://github.com/anvil-works/routing.git master
 
 if ! pg_isready -q 2>/dev/null; then
   echo "Starting PostgreSQL (Homebrew)..."
@@ -77,4 +78,6 @@ exec "$SERVER" \
   --dep-id TGQCF3WT6FVL2EM2=tabulator \
   --dep-id C6ZZPAPN4YYF5NVJ=anvil_extras \
   --dep-id dep_d6bjyrizg8vut=tabulator \
-  --dep-id dep_kfkrna97mklbm=anvil_extras
+  --dep-id dep_kfkrna97mklbm=anvil_extras \
+  --dep-id 3PIDO5P3H4VPEMPL=routing \
+  --dep-id dep_routing=routing

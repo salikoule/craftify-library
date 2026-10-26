@@ -6,6 +6,9 @@ dependencies:
 - dep_id: dep_kfkrna97mklbm
   resolution_hints: {app_id: C6ZZPAPN4YYF5NVJ, name: Anvil Extras, package_name: anvil_extras}
   version: {version_tag: v3.6.3}
+- dep_id: dep_routing
+  resolution_hints: {app_id: 3PIDO5P3H4VPEMPL, name: routing, package_name: routing}
+  version: {branch: master}
 metadata: {description: Craftify library for Anvil client apps., title: craftify-library}
 name: craftify-library
 native_deps:
@@ -33,5 +36,5 @@ services:
 - client_config: {enable_v2: true}
   server_config: {}
   source: /runtime/services/tables.yml
-startup: {module: LibraryDemo, type: form}
+startup: {module: launch, type: module}
 startup_form: null

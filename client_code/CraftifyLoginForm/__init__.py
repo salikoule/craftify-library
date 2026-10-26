@@ -16,9 +16,10 @@ _GOOGLE_ICON = (
 
 
 class CraftifyLoginForm(CraftifyLoginFormTemplate):
-    def __init__(self, redirect_form=None, brand_text="Craftify", brand_sub="Sign in to continue",
+    def __init__(self, redirect_form=None, redirect_path=None, brand_text="Craftify", brand_sub="Sign in to continue",
                  copyright="© Craftify", allow_signup=True, allow_google=True, **properties):
         self._redirect_form = redirect_form
+        self._redirect_path = redirect_path
         self.init_components(**properties)
         self.brand_title.text = brand_text or "Craftify"
         self.brand_subtitle.text = brand_sub or ""
@@ -33,10 +34,18 @@ class CraftifyLoginForm(CraftifyLoginFormTemplate):
         self._resize_handler = None
 
     def _go_next(self):
+        if self._redirect_path:
+            from craftify_library.CraftifyRouting import navigate
+            navigate(path=self._redirect_path)
+            return
         target = self._redirect_form or "AppStartup"
         if callable(target):
             target()
-        else:
+            return
+        try:
+            from craftify_library.CraftifyRouting import open_form as routing_open_form
+            routing_open_form(target)
+        except Exception:
             open_form(target)
 
     def _show_error(self, message):

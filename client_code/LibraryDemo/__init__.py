@@ -10,7 +10,7 @@ from ..CraftifyUtils.echarts_theme import apply_craftify_echarts_theme
 
 
 class LibraryDemo(LibraryDemoTemplate):
-    def __init__(self, **properties):
+    def __init__(self, routing_context=None, **properties):
         self.init_components(**properties)
         configure_craftify_client()
         self._build_demo()
