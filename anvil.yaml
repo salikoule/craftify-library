@@ -6,9 +6,9 @@ dependencies:
 - dep_id: dep_kfkrna97mklbm
   resolution_hints: {app_id: C6ZZPAPN4YYF5NVJ, name: Anvil Extras, package_name: anvil_extras}
   version: {version_tag: v3.6.3}
-- dep_id: dep_routing
+- dep_id: dep_2lwdiwk1dh75u
   resolution_hints: {app_id: 3PIDO5P3H4VPEMPL, name: routing, package_name: routing}
-  version: {branch: master}
+  version: {version_tag: v0.7.0}
 metadata: {description: Craftify library for Anvil client apps., title: craftify-library}
 name: craftify-library
 native_deps:
