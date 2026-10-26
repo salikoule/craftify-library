@@ -1,5 +1,6 @@
 unique_ids:
   assets:
+    account-menu.html: '1793016919521.34576417063791265'
     chart-card.html: '1792755838632.4835877633443355'
     craftify-full-theme.css: '1792756378460.3607966588426521'
     craftify-shell.html: '1792755838633.992677779740932'
@@ -10,6 +11,7 @@ unique_ids:
     theme.css: HYM4VLZDIPBHUXTRIMKSI3WL2XHIITSQ
   forms:
     CraftifyLoginForm: '1792758151768.0073970275856055645'
+    CustomComponents.AccountMenu: '1793016919520.6014454428034001'
     CustomComponents.ChartCard: '1792756177155.5105592050057502'
     CustomComponents.EChart: '1792756177156.7104288260432239'
     CustomComponents.KpiCard: '1792756177157.8127881174301705'

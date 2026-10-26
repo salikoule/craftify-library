@@ -1,0 +1,14 @@
+container:
+  event_bindings: {show: form_show}
+  properties: {html: '@theme:account-menu.html'}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {default_event: true, name: profile_click}
+- {name: reload_click}
+- {name: logout_click}
+is_package: true
+properties:
+- {default_binding_prop: true, default_value: '', name: email, type: string}
+- {default_value: true, name: show_profile, type: boolean}
+- {default_value: true, name: show_logout, type: boolean}

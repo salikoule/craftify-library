@@ -20,5 +20,6 @@ cd craftify-library
 
 ## Auth UI
 
-- `CraftifyLoginForm` — optional `redirect_form=` after sign-in.
+- `CraftifyLoginForm` — iPac-style two-column sign-in. Pass `redirect_form=`, `brand_text=`, `brand_sub=`, `copyright=`, `allow_signup=`.
+- `CustomComponents.AccountMenu` — sidebar account chip. Events: `profile_click`, `reload_click`, `logout_click`.
 - `CraftifyAuth.craftify_require_user()` — server-side guard for `@anvil.server.callable` endpoints.

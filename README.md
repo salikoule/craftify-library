@@ -9,7 +9,7 @@ Synced with Anvil cloud; consumer apps (e.g. **Cyclops**) add this repo as an **
 | Area | Contents |
 |------|----------|
 | **Theme** | `theme.css`, `tabulator_styles.css`, `standard-page.html`, `kpi-card.html`, `chart-card.html`, `craftify-shell.html` (from iPac `data-sheets.html`) |
-| **Client** | `Startup` (Tabulator modules + defaults), `CraftifyUtils`, `CustomComponents` (EChart, KpiCard, ChartCard, ToastyNotification) |
+| **Client** | `Startup` (Tabulator modules + defaults), `CraftifyUtils`, `CraftifyLoginForm`, `CustomComponents` (AccountMenu, EChart, KpiCard, ChartCard, ToastyNotification) |
 | **Charts** | Apache ECharts **5.5.1 via CDN** + `CraftifyUtils.echarts_theme` + `theme/assets/echarts_theme.js` |
 | **Server** | `CraftifyAuth`, `CraftifyError.craftify_report_client_error` |
 | **Demo** | Startup form `LibraryDemo` — KPI tiles, sample Tabulator, sample EChart |
@@ -44,6 +44,8 @@ anvil.set_default_error_handler(ErrorHandling.error_handler)
 4. Import UI pieces:
 
 ```python
+from craftify_library.CraftifyLoginForm import CraftifyLoginForm
+from craftify_library.CustomComponents.AccountMenu import AccountMenu
 from craftify_library.CustomComponents.KpiCard import KpiCard
 from craftify_library.CustomComponents.ChartCard import ChartCard
 from craftify_library.CustomComponents.EChart import EChart

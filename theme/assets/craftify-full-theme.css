@@ -2307,6 +2307,23 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 
 
 /* Brand hero: navy mesh + faint grid. Form panel stays solid. */
+.anvil-role-login-page > .anvil-panel-section > .anvil-panel-section-container > .anvil-panel-section-gutter > .anvil-panel-row {
+  display: flex !important;
+  min-height: 100dvh;
+  align-items: stretch;
+}
+.anvil-role-login-page .anvil-role-login-hero,
+.anvil-role-login-page .anvil-role-login-card {
+  flex: 1 1 50%;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .anvil-role-login-page > .anvil-panel-section > .anvil-panel-section-container > .anvil-panel-section-gutter > .anvil-panel-row {
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
 .anvil-role-login-page {
   background-color: #10253f;
   background-image:
@@ -2348,9 +2365,17 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 
 .anvil-role-home-header > .anvil-panel-section,
 .anvil-role-home-header > .anvil-panel-section > .anvil-panel-section-container,
-.anvil-role-home-header > .anvil-panel-section > .anvil-panel-section-container > .anvil-panel-section-gutter,
-.anvil-role-home-header .anvil-panel-row {
+.anvil-role-home-header > .anvil-panel-section > .anvil-panel-section-container > .anvil-panel-section-gutter {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.anvil-role-home-header .anvil-panel-row {
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2424,6 +2449,17 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
   color: #10253f !important;
 }
 
+.anvil-role-login-hero .anvil-role-login-heading,
+.anvil-role-login-hero .anvil-role-login-heading .anvil-label-text {
+  font-size: 42px !important;
+  color: #ffffff !important;
+}
+
+.anvil-role-login-hero .anvil-role-login-subtitle,
+.anvil-role-login-hero .anvil-role-login-subtitle .anvil-label-text {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
 .anvil-role-login-subtitle,
 .anvil-role-login-subtitle .anvil-label-text {
   font-size: 14px !important;
@@ -2466,6 +2502,7 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 .anvil-role-login-card .anvil-textbox,
 .anvil-role-login-card input.form-control,
 .anvil-role-login-card .anvil-component.anvil-textbox,
+.anvil-role-login-card .anvil-btn,
 .anvil-role-login-card .btn {
   width: 100% !important;
   max-width: 100%;
@@ -2473,7 +2510,8 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 }
 
 .anvil-role-login-input input.form-control,
-.anvil-role-login-card .anvil-role-login-input input {
+.anvil-role-login-card .anvil-role-login-input input,
+input.anvil-role-login-input.anvil-form-control {
   height: 44px;
   border: 1px solid #d5dbe3 !important;
   border-radius: 8px !important;
@@ -2509,6 +2547,8 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
   text-decoration: underline !important;
 }
 
+.anvil-role-login-primary-btn.anvil-btn,
+.anvil-role-login-primary-btn > .anvil-btn,
 .anvil-role-login-primary-btn > .btn,
 .anvil-role-login-primary-btn.file-loader > label {
   background-color: #1f497d !important;
@@ -2525,6 +2565,12 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
   justify-content: center;
 }
 
+.anvil-role-login-primary-btn.anvil-btn:hover,
+.anvil-role-login-primary-btn.anvil-btn:focus,
+.anvil-role-login-primary-btn.anvil-btn:active,
+.anvil-role-login-primary-btn > .anvil-btn:hover,
+.anvil-role-login-primary-btn > .anvil-btn:focus,
+.anvil-role-login-primary-btn > .anvil-btn:active,
 .anvil-role-login-primary-btn > .btn:hover,
 .anvil-role-login-primary-btn > .btn:focus,
 .anvil-role-login-primary-btn > .btn:active {
@@ -2542,6 +2588,8 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
   margin-bottom: 8px;
 }
 
+.anvil-role-login-sso-btn.anvil-btn,
+.anvil-role-login-sso-btn > .anvil-btn,
 .anvil-role-login-sso-btn > .btn {
   background-color: #ffffff !important;
   color: #1a2b3c !important;
@@ -2556,6 +2604,12 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
   justify-content: center;
 }
 
+.anvil-role-login-sso-btn.anvil-btn:hover,
+.anvil-role-login-sso-btn.anvil-btn:focus,
+.anvil-role-login-sso-btn.anvil-btn:active,
+.anvil-role-login-sso-btn > .anvil-btn:hover,
+.anvil-role-login-sso-btn > .anvil-btn:focus,
+.anvil-role-login-sso-btn > .anvil-btn:active,
 .anvil-role-login-sso-btn > .btn:hover,
 .anvil-role-login-sso-btn > .btn:focus,
 .anvil-role-login-sso-btn > .btn:active {
@@ -2596,6 +2650,9 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 .anvil-role-login-hero {
   position: relative !important;
   overflow: hidden;
+  min-height: 100dvh;
+  height: 100dvh;
+  box-sizing: border-box;
 }
 
 .anvil-role-login-hero .anvil-panel-row:has(.anvil-role-login-footer-left),
