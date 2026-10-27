@@ -1,0 +1,16 @@
+container:
+  event_bindings: {hide: form_hide, show: form_show}
+  properties: {html: '@theme:settings-overlay.html'}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {name: opened}
+- {name: closed}
+is_package: true
+properties:
+- {default_value: Craftify, name: app_name, type: string}
+- {default_value: '', name: app_version, type: string}
+- {default_value: Built on Craftify., name: app_description, type: string}
+- {default_value: account, name: default_section, type: string}
+- {default_value: '', name: docs_url, type: string}
+- {default_value: '', name: changelog_url, type: string}

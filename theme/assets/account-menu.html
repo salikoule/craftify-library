@@ -41,12 +41,22 @@
   .am-item:hover { background: #f8fafc; }
   .am-item .am-ico {
     width: 18px;
-    text-align: center;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #334155;
     font-size: 13px;
     flex: 0 0 auto;
   }
-  .am-item .am-ico svg { display: block; margin: 0 auto; }
+  .am-item .am-ico i,
+  .am-item .am-ico .fa,
+  .am-item .am-ico .fa-solid {
+    font-size: 14px;
+    line-height: 1;
+    width: 14px;
+    text-align: center;
+  }
   .am-item.am-danger { color: #b91c1c; }
   .am-item.am-danger .am-ico { color: #b91c1c; }
   .am-rule { height: 1px; background: var(--line); }
@@ -106,16 +116,22 @@
 
 <div class="am-wrap" anvil-name="am_root">
   <div class="am-menu am-off" anvil-name="am_menu">
-    <button type="button" class="am-item" data-action="profile" anvil-name="am_profile_item">
-      <span class="am-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-      Profile
+    <button type="button" class="am-item" data-action="account" anvil-name="am_account_item">
+      <span class="am-ico"><i class="fa-solid fa-user" aria-hidden="true"></i></span>
+      Account
+    </button>
+    <button type="button" class="am-item" data-action="settings" anvil-name="am_settings_item">
+      <span class="am-ico"><i class="fa-solid fa-gear" aria-hidden="true"></i></span>
+      Settings
     </button>
     <button type="button" class="am-item" data-action="reload">
-      <span class="am-ico">↻</span>Reload page
+      <span class="am-ico"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></span>
+      Reload page
     </button>
     <div class="am-rule"></div>
     <button type="button" class="am-item am-danger" data-action="logout" anvil-name="am_logout_item">
-      <span class="am-ico">→</span>Logout
+      <span class="am-ico"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></span>
+      Logout
     </button>
   </div>
   <div class="am-box">

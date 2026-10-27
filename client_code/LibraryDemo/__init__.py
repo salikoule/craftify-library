@@ -7,6 +7,7 @@ from ..CustomComponents.EChart import EChart
 
 from ..CustomComponents.KpiCard import KpiCard
 from ..CustomComponents.ChartCard import ChartCard
+from ..CustomComponents.SettingsOverlay import SettingsOverlay
 from ..CraftifyUtils.echarts_theme import apply_craftify_echarts_theme
 
 
@@ -21,7 +22,16 @@ class LibraryDemo(LibraryDemoTemplate):
             text="Shared theme, Tabulator defaults, ECharts theme, KPI and chart shells — same patterns as iPac.",
             font_size=13,
         )
+        self._settings = SettingsOverlay(
+            app_name="craftify-library",
+            app_version="1.0",
+            app_description="Shared Craftify Anvil components.",
+        )
+        self.add_component(self._settings)
+        open_settings = Button(text="Open settings", role="primary-color")
+        open_settings.set_event_handler("click", lambda **e: self._settings.open())
         self.main_panel.add_component(intro, full_width_row=True)
+        self.main_panel.add_component(open_settings)
 
         kpi_row = FlowPanel(align="left", spacing=12)
         for title, value, subtitle, tone in (

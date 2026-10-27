@@ -96,10 +96,13 @@ class AccountMenu(AccountMenuTemplate):
             email_node.title = self._email
         if initials_node is not None:
             initials_node.textContent = _initials(self._email)
-        profile = self._node("am_profile_item")
+        account = self._node("am_account_item") or self._node("am_profile_item")
+        settings = self._node("am_settings_item")
         logout = self._node("am_logout_item")
-        if profile is not None:
-            profile.classList.toggle("am-off", not self._show_profile)
+        if account is not None:
+            account.classList.toggle("am-off", not self._show_profile)
+        if settings is not None:
+            settings.classList.toggle("am-off", not self._show_profile)
         if logout is not None:
             logout.classList.toggle("am-off", not self._show_logout)
         if not self._bound:
@@ -123,7 +126,14 @@ class AccountMenu(AccountMenuTemplate):
         event.stopPropagation()
         self._set_open(False)
         action = action_btn.getAttribute("data-action")
-        if action == "profile":
+        if action == "settings":
+            self.raise_event("settings_click")
+            self.raise_event("profile_click")
+        elif action == "account":
+            self.raise_event("settings_click", section="account")
+            self.raise_event("profile_click")
+        elif action == "profile":
+            self.raise_event("settings_click", section="account")
             self.raise_event("profile_click")
         elif action == "reload":
             self.raise_event("reload_click")

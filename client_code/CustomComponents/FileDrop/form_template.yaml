@@ -1,0 +1,12 @@
+container:
+  event_bindings: {show: form_show}
+  properties: {html: '@theme:file-drop.html'}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {default_event: true, name: change}
+is_package: true
+properties:
+- {default_binding_prop: true, default_value: Drop file here, name: title, type: string}
+- {default_value: or click to browse, name: hint, type: string}
+- {default_value: '', name: file_types, type: string}

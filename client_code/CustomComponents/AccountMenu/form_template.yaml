@@ -4,7 +4,8 @@ container:
   type: HtmlTemplate
 custom_component: true
 events:
-- {default_event: true, name: profile_click}
+- {default_event: true, name: settings_click}
+- {name: profile_click}
 - {name: reload_click}
 - {name: logout_click}
 is_package: true

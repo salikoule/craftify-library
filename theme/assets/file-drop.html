@@ -1,0 +1,173 @@
+<style>
+  .cf-drop-page {
+    --navy: #1e3a5f;
+    --muted: #64748b;
+    --line: #9bb6d3;
+    --fill: #f8fafc;
+    --ink: #0f172a;
+    width: 100%;
+    font-family: Montserrat, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .cf-drop-page,
+  .cf-drop-page * { box-sizing: border-box; }
+
+  .anvil-html-component:has(.cf-drop-page),
+  .anvil-html-component:has(.cf-drop-page) > .anvil-html-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    background: transparent !important;
+  }
+
+  .cf-drop {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 112px;
+    padding: 20px 18px;
+    border: 1.5px dashed var(--line);
+    border-radius: 14px;
+    background: var(--fill);
+    color: var(--ink);
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cf-drop.is-over {
+    border-color: var(--navy);
+    background: #e8f1fb;
+    box-shadow: inset 0 0 0 1px var(--navy);
+  }
+  .cf-drop.is-ready {
+    border-style: solid;
+    border-color: #cbd5e1;
+    background: #fff;
+  }
+  .cf-drop-ui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    text-align: center;
+    max-width: 360px;
+  }
+  .cf-drop-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    color: var(--navy);
+    font-size: 16px;
+  }
+  .cf-drop.is-over .cf-drop-icon,
+  .cf-drop.is-ready .cf-drop-icon {
+    background: #e8f1fb;
+    border-color: #9bb6d3;
+  }
+  .cf-drop-title {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .cf-drop-hint {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .cf-drop-name {
+    display: none;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--ink);
+    word-break: break-all;
+  }
+  .cf-drop.is-ready .cf-drop-name { display: block; }
+  .cf-drop.is-ready .cf-drop-title,
+  .cf-drop.is-ready .cf-drop-hint { display: none; }
+  .cf-drop-clear {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    display: none;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    background: #fff;
+    color: #334155;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .cf-drop.is-ready .cf-drop-clear { display: inline-flex; align-items: center; }
+  .cf-drop-clear:hover {
+    border-color: #9bb6d3;
+    color: var(--navy);
+  }
+  .cf-drop-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+  }
+
+  html.ipac-dark .cf-drop-page {
+    --navy: #93c5fd;
+    --muted: #94a3b8;
+    --line: #3b4d68;
+    --fill: #121a2b;
+    --ink: #e7eef7;
+  }
+  html.ipac-dark .cf-drop.is-over {
+    background: #1a2740;
+  }
+  html.ipac-dark .cf-drop.is-ready {
+    background: #151e2e;
+    border-color: #2a3a52;
+  }
+  html.ipac-dark .cf-drop-icon {
+    background: #151e2e;
+    border-color: #2a3a52;
+    color: #93c5fd;
+  }
+  html.ipac-dark .cf-drop.is-over .cf-drop-icon,
+  html.ipac-dark .cf-drop.is-ready .cf-drop-icon {
+    background: #1a2740;
+    border-color: #3b4d68;
+  }
+  html.ipac-dark .cf-drop-clear {
+    background: #151e2e;
+    border-color: #2a3a52;
+    color: #e7eef7;
+  }
+</style>
+<div class="cf-drop-page">
+  <div class="cf-drop" anvil-name="root">
+    <div class="cf-drop-ui">
+      <div class="cf-drop-icon" anvil-name="icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+      <div class="cf-drop-title" anvil-name="title">Drop file here</div>
+      <div class="cf-drop-hint" anvil-name="hint">or click to browse</div>
+      <div class="cf-drop-name" anvil-name="filename"></div>
+    </div>
+    <button type="button" class="cf-drop-clear" anvil-name="clear">Clear</button>
+    <input type="file" class="cf-drop-input" anvil-name="input" />
+  </div>
+</div>

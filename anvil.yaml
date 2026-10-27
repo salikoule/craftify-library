@@ -18,7 +18,20 @@ native_deps:
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
     <script src="_/theme/echarts_theme.js"></script>
+    <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem("craftify-theme") || "light";
+        var dark = stored === "dark" || (stored === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("ipac-dark", dark);
+        document.documentElement.classList.toggle("craftify-theme-dark", dark);
+        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        document.documentElement.style.colorScheme = dark ? "dark" : "light";
+      } catch (e) {}
+    })();
+    </script>
     <link rel="stylesheet" href="_/theme/craftify-full-theme.css">
+    <link rel="stylesheet" href="_/theme/craftify-theme.css">
     <script>
     function getScrollPosition(selector) {
       return $(selector).scrollTop();

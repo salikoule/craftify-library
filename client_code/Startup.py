@@ -40,4 +40,8 @@ def configure():
         Tabulator.modules.add(name)
 
     install_craftify_echarts_theme()
+    from .CraftifyUtils.theme import apply_theme, listen_for_system_theme
+
+    apply_theme()
+    listen_for_system_theme()
     _configured = True

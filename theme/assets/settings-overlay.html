@@ -1,0 +1,463 @@
+<style>
+  .cs-overlay {
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --panel: #ffffff;
+    --sidebar: #f8fafc;
+    --accent: #1e3a5f;
+    --accent-on: #ffffff;
+    --accent-soft: #e8f1fb;
+    --hover: #f1f5f9;
+    --danger: #b91c1c;
+    --overlay: rgba(15, 39, 68, 0.36);
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    font-family: Montserrat, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  html.ipac-dark .cs-overlay,
+  html.craftify-theme-dark .cs-overlay,
+  html[data-theme="dark"] .cs-overlay {
+    --ink: #e8eef6;
+    --muted: #94a3b8;
+    --line: #243044;
+    --panel: #111827;
+    --sidebar: #0b1220;
+    --accent: #93c5fd;
+    --accent-on: #0b1220;
+    --accent-soft: #1e3a5f;
+    --hover: #1e293b;
+    --danger: #fca5a5;
+    --overlay: rgba(2, 8, 20, 0.62);
+  }
+  .cs-overlay,
+  .cs-overlay * { box-sizing: border-box; }
+  .cs-overlay.cs-off { display: none !important; }
+  .cs-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: var(--overlay);
+    cursor: pointer;
+  }
+  .cs-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(920px, 100%);
+    height: min(85vh, 720px);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(15, 39, 68, 0.2);
+  }
+  @media (min-width: 720px) {
+    .cs-panel { flex-direction: row; }
+  }
+  .cs-nav {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    background: var(--sidebar);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 720px) {
+    .cs-nav {
+      width: 208px;
+      border-bottom: 0;
+      border-right: 1px solid var(--line);
+    }
+  }
+  .cs-nav-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cs-nav-head h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .cs-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    overflow: auto;
+  }
+  .cs-nav-rule {
+    height: 1px;
+    margin: 6px 4px;
+    background: var(--line);
+    border: 0;
+  }
+  .cs-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: left;
+    cursor: pointer;
+  }
+  .cs-nav-btn:hover { background: var(--hover); color: var(--ink); }
+  .cs-nav-btn.is-active { background: var(--accent-soft); color: var(--accent); }
+  .cs-soon {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cs-main {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .cs-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .cs-close:hover { background: var(--hover); color: var(--ink); }
+  .cs-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 22px 24px;
+  }
+  .cs-section { display: none; }
+  .cs-section.is-on { display: block; }
+  .cs-section h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .cs-lead {
+    margin: 6px 0 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .cs-card {
+    margin: 0 0 16px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--sidebar);
+  }
+  .cs-card h4 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .cs-field { margin: 0 0 14px; }
+  .cs-field label,
+  .cs-check {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cs-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .cs-check input { margin: 0; }
+  .cs-field input,
+  .cs-field select {
+    width: 100%;
+    max-width: 360px;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--panel);
+  }
+  .cs-field input[readonly] { color: var(--muted); background: var(--sidebar); }
+  .cs-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .cs-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 14px;
+    cursor: pointer;
+  }
+  .cs-btn:hover { background: var(--hover); }
+  .cs-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .cs-btn-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-on);
+  }
+  .cs-btn-primary:hover { filter: brightness(1.08); }
+  .cs-btn-danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, var(--line)); }
+  .cs-msg { margin: 10px 0 0; font-size: 13px; color: var(--accent); }
+  .cs-msg.is-error { color: var(--danger); }
+  .cs-seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .cs-seg button {
+    border: 0;
+    background: var(--panel);
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  .cs-seg button.is-on { background: var(--accent-soft); color: var(--accent); }
+  .cs-dl { margin: 0; }
+  .cs-dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .cs-dl dt { color: var(--muted); }
+  .cs-dl dd { margin: 0; font-weight: 650; color: var(--ink); }
+  .cs-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+  .cs-links a { color: var(--accent); font-size: 13px; font-weight: 650; text-decoration: none; }
+  .cs-links a:hover { text-decoration: underline; }
+  .cs-app { min-height: 100%; }
+  .cs-id {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .cs-ava {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-on);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .cs-id p { margin: 0; font-size: 13px; color: var(--muted); }
+  .cs-id strong { display: block; color: var(--ink); font-size: 14px; }
+</style>
+
+<div class="cs-overlay cs-off" anvil-name="cs_root" role="presentation">
+  <button type="button" class="cs-backdrop" anvil-name="cs_backdrop" aria-label="Close settings"></button>
+  <div class="cs-panel" role="dialog" aria-modal="true" aria-labelledby="cs-title">
+    <nav class="cs-nav" aria-label="Settings sections">
+      <div class="cs-nav-head">
+        <h2 id="cs-title">Settings</h2>
+      </div>
+      <div class="cs-nav-list" anvil-name="cs_nav"></div>
+    </nav>
+    <div class="cs-main">
+      <button type="button" class="cs-close" anvil-name="cs_close" aria-label="Close">×</button>
+      <div class="cs-body">
+        <div class="cs-section" data-section="account" anvil-name="cs_account">
+          <h3>Account</h3>
+          <p class="cs-lead">Your sign-in identity and preferences on this workspace.</p>
+          <div class="cs-id">
+            <div class="cs-ava" anvil-name="cs_avatar">?</div>
+            <div>
+              <strong anvil-name="cs_display_label">Signed in</strong>
+              <p anvil-name="cs_email_label"></p>
+            </div>
+          </div>
+          <div class="cs-field">
+            <label for="cs_email">Email</label>
+            <input id="cs_email" type="email" readonly anvil-name="cs_email">
+          </div>
+          <div class="cs-field">
+            <label for="cs_display">Display name</label>
+            <input id="cs_display" type="text" maxlength="80" placeholder="How you appear in this app" anvil-name="cs_display">
+          </div>
+          <div class="cs-actions">
+            <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_name">Save display name</button>
+          </div>
+          <div class="cs-card">
+            <h4>Regional preferences</h4>
+            <div class="cs-field">
+              <label for="cs_timezone">Timezone</label>
+              <select id="cs_timezone" anvil-name="cs_timezone"></select>
+            </div>
+            <div class="cs-field">
+              <label for="cs_locale">Language</label>
+              <select id="cs_locale" anvil-name="cs_locale"></select>
+            </div>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn" anvil-name="cs_save_regional">Save preferences</button>
+            </div>
+          </div>
+          <div class="cs-card">
+            <h4>Password</h4>
+            <div class="cs-field">
+              <label>Current password</label>
+              <input type="password" autocomplete="current-password" anvil-name="cs_old_pw">
+            </div>
+            <div class="cs-field">
+              <label>New password</label>
+              <input type="password" autocomplete="new-password" anvil-name="cs_new_pw">
+            </div>
+            <div class="cs-field">
+              <label>Confirm new password</label>
+              <input type="password" autocomplete="new-password" anvil-name="cs_confirm_pw">
+            </div>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_pw">Update password</button>
+              <button type="button" class="cs-btn" anvil-name="cs_reset_pw">Email a reset link</button>
+            </div>
+          </div>
+          <div class="cs-card">
+            <h4>Two-factor authentication <span class="cs-soon">Soon</span></h4>
+            <p class="cs-lead" style="margin-bottom:0">Authenticator-app codes will live here. Anvil Users does not expose TOTP yet.</p>
+          </div>
+          <div class="cs-card">
+            <h4>Connected accounts</h4>
+            <p class="cs-lead" anvil-name="cs_google_status">Google sign-in is available on the login page.</p>
+          </div>
+          <p class="cs-msg" anvil-name="cs_account_msg"></p>
+        </div>
+        <div class="cs-section" data-section="appearance" anvil-name="cs_appearance">
+          <h3>Appearance</h3>
+          <p class="cs-lead">How this app looks on this device.</p>
+          <p class="cs-field"><label>Theme</label></p>
+          <div class="cs-seg" role="group" aria-label="Theme">
+            <button type="button" data-theme="light" anvil-name="cs_theme_light">Light</button>
+            <button type="button" data-theme="dark" anvil-name="cs_theme_dark">Dark</button>
+            <button type="button" data-theme="system" anvil-name="cs_theme_system">System</button>
+          </div>
+          <p class="cs-lead" style="margin-top:12px">Stored in this browser until account sync is available.</p>
+          <div class="cs-card">
+            <h4>Units</h4>
+            <div class="cs-seg" role="group" aria-label="Units">
+              <button type="button" data-units="metric" anvil-name="cs_units_metric">Metric</button>
+              <button type="button" data-units="imperial" anvil-name="cs_units_imperial">Imperial</button>
+            </div>
+            <p class="cs-lead" style="margin:10px 0 0">Apps can read this preference. Body Comp still records metric values.</p>
+          </div>
+        </div>
+        <div class="cs-section" data-section="notifications" anvil-name="cs_notifications">
+          <h3>Notifications</h3>
+          <p class="cs-lead">Choose what this device should remind you about. Email delivery is not wired yet.</p>
+          <label class="cs-check"><input type="checkbox" anvil-name="cs_notify_product"> Product updates</label>
+          <label class="cs-check"><input type="checkbox" anvil-name="cs_notify_checkin"> Weekly check-in reminder</label>
+          <label class="cs-check"><input type="checkbox" anvil-name="cs_notify_email"> Email copies of alerts</label>
+          <div class="cs-actions">
+            <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_notify">Save notification preferences</button>
+          </div>
+          <p class="cs-msg" anvil-name="cs_notify_msg"></p>
+        </div>
+        <div class="cs-section" data-section="privacy" anvil-name="cs_privacy">
+          <h3>Privacy</h3>
+          <p class="cs-lead">Session and data-sharing controls for this workspace.</p>
+          <div class="cs-card">
+            <h4>This device</h4>
+            <p class="cs-lead">You stay signed in on this browser until you log out or the remember-me window expires.</p>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn" anvil-name="cs_signout_device">Sign out this device</button>
+            </div>
+          </div>
+          <div class="cs-card">
+            <h4>Other sessions <span class="cs-soon">Soon</span></h4>
+            <p class="cs-lead" style="margin-bottom:0">Revoking remembered logins on other devices will live here.</p>
+          </div>
+        </div>
+        <div class="cs-section" data-section="data" anvil-name="cs_data">
+          <h3>Data</h3>
+          <p class="cs-lead">Export and workspace data tools.</p>
+          <div class="cs-card">
+            <h4>Export <span class="cs-soon">Soon</span></h4>
+            <p class="cs-lead">Download a copy of your records from this app.</p>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn" disabled>Export my data</button>
+            </div>
+          </div>
+          <div class="cs-card">
+            <h4>Delete account <span class="cs-soon">Soon</span></h4>
+            <p class="cs-lead">Permanently remove this login and its app data.</p>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn cs-btn-danger" disabled>Delete account</button>
+            </div>
+          </div>
+        </div>
+        <div class="cs-section" data-section="ai" anvil-name="cs_ai">
+          <h3>AI</h3>
+          <p class="cs-lead">Assistant providers and keys for apps that use them.</p>
+          <div class="cs-card">
+            <h4>Provider <span class="cs-soon">Soon</span></h4>
+            <p class="cs-lead" style="margin-bottom:0">Choose a model provider and store keys in App Secrets, not in the browser.</p>
+          </div>
+        </div>
+        <div class="cs-section" data-section="about" anvil-name="cs_about">
+          <h3>About</h3>
+          <p class="cs-lead" anvil-name="cs_about_desc">Built on Craftify.</p>
+          <dl class="cs-dl">
+            <div><dt>App</dt><dd anvil-name="cs_about_name">Craftify</dd></div>
+            <div><dt>Version</dt><dd anvil-name="cs_about_version">—</dd></div>
+          </dl>
+          <div class="cs-links">
+            <a href="#" target="_blank" rel="noopener noreferrer" anvil-name="cs_docs">Documentation</a>
+            <a href="#" target="_blank" rel="noopener noreferrer" anvil-name="cs_changelog">Changelog</a>
+          </div>
+          <p class="cs-lead" style="margin-top:16px">Settings and theme stay on this device until cloud accounts sync them.</p>
+        </div>
+        <div class="cs-section cs-app" data-section="app" anvil-slot="section"></div>
+      </div>
+    </div>
+  </div>
+</div>
