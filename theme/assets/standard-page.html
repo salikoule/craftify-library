@@ -76,6 +76,18 @@
     }
     $('.am-wrap.am-open').removeClass('am-open').find('.am-menu').addClass('am-off');
   });
+  function labelNavLinks() {
+    $('.left-nav-main a').each(function() {
+      var $a = $(this);
+      var text = ($a.find('.link-text').first().text() || $a.text() || '').replace(/\s+/g, ' ').trim();
+      if (!text) {
+        return;
+      }
+      $a.attr('data-nav-label', text);
+      $a.attr('aria-label', text);
+      $a.removeAttr('title');
+    });
+  }
   $('.nav-collapse').off('click').on('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -83,6 +95,14 @@
     var collapsed = $('.structure').hasClass('nav-collapsed');
     $(this).attr('title', collapsed ? 'Expand menu' : 'Collapse menu');
     $(this).attr('aria-label', collapsed ? 'Expand menu' : 'Collapse menu');
+    labelNavLinks();
     $(window).trigger('resize');
   });
+  labelNavLinks();
+  if (window.MutationObserver) {
+    var navMain = document.querySelector('.left-nav-main');
+    if (navMain) {
+      new MutationObserver(labelNavLinks).observe(navMain, {childList: true, subtree: true});
+    }
+  }
 </script>
