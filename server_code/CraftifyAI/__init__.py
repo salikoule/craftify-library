@@ -1,4 +1,5 @@
 import anvil.server
+from anvil.tables import app_tables
 from ..CraftifyAuth import AuthError, craftify_require_user
 
 KEY_COL = "openai_api_key"
@@ -13,21 +14,53 @@ def key_hint(key):
     return "%s…%s" % (text[:3], text[-4:])
 
 
+def _users_table():
+    return getattr(app_tables, "users", None)
+
+
+def _user_row(user):
+    table = _users_table()
+    if table is not None:
+        try:
+            row = table.get_by_id(user.get_id())
+            if row is not None:
+                return row
+        except Exception:
+            pass
+        try:
+            email = ((user["email"] or "") if user is not None else "").strip()
+            if email:
+                matches = list(table.search(email=email))
+                if matches:
+                    return matches[0]
+        except Exception:
+            pass
+    return user
+
+
 def user_openai_key(user=None):
     """Server-only. Never send the raw key to the browser."""
     if user is None:
         user = craftify_require_user()
+    row = _user_row(user)
     try:
-        return (user[KEY_COL] or "").strip()
+        return (row[KEY_COL] or "").strip()
     except Exception:
         return ""
 
 
 def _write_key(user, value):
+    row = _user_row(user)
     try:
-        user[KEY_COL] = value
-        if hasattr(user, "update"):
-            user.update()
+        row[KEY_COL] = value
+        return
+    except Exception:
+        pass
+    try:
+        row[KEY_COL] = value
+        if hasattr(row, "update"):
+            row.update()
+        return
     except Exception:
         raise AuthError("This app cannot store a personal API key yet.")
 
