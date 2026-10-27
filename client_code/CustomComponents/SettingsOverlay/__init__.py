@@ -1,6 +1,7 @@
 from ._anvil_designer import SettingsOverlayTemplate
 from anvil import *
 from anvil.js import get_dom_node, window
+import anvil.server
 import anvil.users
 from ...CraftifyUtils.theme import apply_theme, current_theme
 
@@ -10,7 +11,7 @@ GLOBAL_SECTIONS = (
     ("notifications", "Notifications", False),
     ("privacy", "Privacy", False),
     ("data", "Data", True),
-    ("ai", "AI", True),
+    ("ai", "AI", False),
     ("about", "About", False),
 )
 UNITS_KEY = "craftify-units"
@@ -179,6 +180,8 @@ class SettingsOverlay(SettingsOverlayTemplate):
             ("cs_save_name", self._save_name),
             ("cs_save_regional", self._save_regional),
             ("cs_save_notify", self._save_notify),
+            ("cs_save_ai", self._save_ai),
+            ("cs_clear_ai", self._clear_ai),
             ("cs_signout_device", self._sign_out),
             ("cs_theme_light", lambda e: self._set_theme("light")),
             ("cs_theme_dark", lambda e: self._set_theme("dark")),
@@ -300,6 +303,8 @@ class SettingsOverlay(SettingsOverlayTemplate):
             self._fill_account()
         if section == "notifications":
             self._paint_notify()
+        if section == "ai":
+            self._paint_ai()
         self._paint_prefs()
 
     def _mount_extra(self, extra):
@@ -472,6 +477,53 @@ class SettingsOverlay(SettingsOverlayTemplate):
         msg = _node(self, "cs_notify_msg")
         if msg is not None:
             msg.textContent = "Notification preferences saved on this device."
+
+    def _ai_msg(self, text, error=False):
+        node = _node(self, "cs_ai_msg")
+        if node is None:
+            return
+        node.textContent = text or ""
+        node.classList.toggle("is-error", bool(error))
+
+    def _paint_ai(self, status=None):
+        if status is None:
+            try:
+                status = anvil.server.call("craftify_ai_key_status")
+            except Exception as e:
+                self._ai_msg(str(e) or "Could not load the AI key.", error=True)
+                status = {}
+        hint = (status or {}).get("hint") or ""
+        has_key = bool((status or {}).get("has_key"))
+        label = _node(self, "cs_ai_status")
+        if label is not None:
+            if has_key:
+                label.textContent = "Key saved for this account (%s). Used when a file needs a model." % hint
+            else:
+                label.textContent = "No key saved. File reading still works from the PDF text when it can."
+        box = _node(self, "cs_ai_key")
+        if box is not None:
+            box.value = ""
+            box.placeholder = hint or "sk-…"
+
+    def _save_ai(self, event=None):
+        box = _node(self, "cs_ai_key")
+        key = getattr(box, "value", "") if box is not None else ""
+        try:
+            status = anvil.server.call("craftify_ai_save_key", key)
+        except Exception as e:
+            self._ai_msg(str(e) or "Could not save the API key.", error=True)
+            return
+        self._paint_ai(status)
+        self._ai_msg("API key saved for this account.")
+
+    def _clear_ai(self, event=None):
+        try:
+            status = anvil.server.call("craftify_ai_clear_key")
+        except Exception as e:
+            self._ai_msg(str(e) or "Could not remove the API key.", error=True)
+            return
+        self._paint_ai(status)
+        self._ai_msg("API key removed.")
 
     def open(self, section=None):
         self._portal()

@@ -437,10 +437,19 @@
         </div>
         <div class="cs-section" data-section="ai" anvil-name="cs_ai">
           <h3>AI</h3>
-          <p class="cs-lead">Assistant providers and keys for apps that use them.</p>
+          <p class="cs-lead">Each account uses its own OpenAI key. The key is stored on your user record and used when this app asks a model to read a file.</p>
           <div class="cs-card">
-            <h4>Provider <span class="cs-soon">Soon</span></h4>
-            <p class="cs-lead" style="margin-bottom:0">Choose a model provider and store keys in App Secrets, not in the browser.</p>
+            <h4>OpenAI</h4>
+            <p class="cs-lead" anvil-name="cs_ai_status">No key saved. File reading still works from the PDF text when it can.</p>
+            <div class="cs-field">
+              <label for="cs_ai_key">API key</label>
+              <input id="cs_ai_key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" anvil-name="cs_ai_key">
+            </div>
+            <div class="cs-actions">
+              <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_ai">Save key</button>
+              <button type="button" class="cs-btn" anvil-name="cs_clear_ai">Remove key</button>
+            </div>
+            <p class="cs-msg" anvil-name="cs_ai_msg"></p>
           </div>
         </div>
         <div class="cs-section" data-section="about" anvil-name="cs_about">
