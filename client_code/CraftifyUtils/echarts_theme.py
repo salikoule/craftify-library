@@ -26,6 +26,43 @@ _original_init = None
 OPT_OUT_KEY = "craftify_theme"
 
 
+def padded_value_axis(values, name="", floor=800, step=100, pad=250):
+    """Value axis that sits under the data so the shortest bar still reads.
+
+    ECharts ``scale: True`` snaps the min to a nice number at or just below the
+    lowest point, which flattens a 2000 kcal week onto a 2000 axis. This keeps
+    ~250 kcal (or 20% of the span) of room under the lowest value, snaps to
+    ``step``, and never goes to 0. ``floor`` is the lowest allowed baseline so a
+    3200 kcal user is not forced down to 1500.
+    """
+    nums = []
+    for raw in values or []:
+        number = _as_number(raw)
+        if number is not None and number > 0:
+            nums.append(number)
+    axis = {"type": "value", "scale": False, "name": name}
+    if not nums:
+        axis["min"] = floor
+        return axis
+    low, high = min(nums), max(nums)
+    span = max(high - low, step * 4)
+    headroom = max(pad, span * 0.2)
+    ymin = max(floor, _nice_step(low - headroom, step, up=False))
+    ymax = _nice_step(high + max(step, span * 0.1), step, up=True)
+    if ymax <= ymin:
+        ymax = ymin + step * 4
+    axis["min"] = ymin
+    axis["max"] = ymax
+    return axis
+
+
+def _nice_step(value, step, up=False):
+    size = float(step) if step else 1.0
+    if up:
+        return int(((value + size - 1e-9) // size) * size)
+    return int((value // size) * size)
+
+
 def apply_craftify_echarts_theme(options):
     """Mutate an ECharts option dict with modern defaults. Returns the same object.
 
