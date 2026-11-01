@@ -82,6 +82,13 @@ class FileDrop(FileDropTemplate):
         root = self._node("root")
         if root is not None:
             root.classList.remove("is-over")
+        transfer = getattr(event, "dataTransfer", None)
+        files = getattr(transfer, "files", None) if transfer is not None else None
+        if not files or not len(files):
+            return
+        self._file = _to_media(files[0])
+        self._render()
+        self.raise_event("change")
 
     def _on_pick(self, *_args):
         picker = self._node("input")
