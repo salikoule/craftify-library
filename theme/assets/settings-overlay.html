@@ -295,7 +295,10 @@
   .cs-id p { margin: 0; font-size: 13px; color: var(--muted); }
   .cs-id strong { display: block; color: var(--ink); font-size: 14px; }
   .cs-u-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .cs-u-head h3 { margin-top: 0; }
+  .cs-u-head { margin-top: 22px; }
+  .cs-u-title { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+  .cs-u-head .cs-lead { margin-bottom: 12px; }
+  .cs-u-seg { margin-bottom: 14px; }
   .cs-u-seg button { font-size: 12px; padding: 6px 11px; }
   .cs-u-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 0 0 14px; }
   .cs-u-tile { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--sidebar); min-width: 0; }
@@ -471,7 +474,7 @@
         </div>
         <div class="cs-section" data-section="ai" anvil-name="cs_ai">
           <h3>AI</h3>
-          <p class="cs-lead">Each account uses its own OpenAI key. The key is stored on your user record and used when this app asks a model to read a file.</p>
+          <p class="cs-lead">Each account uses its own OpenAI key. The key is stored on your user record and used whenever this app calls a model. Usage and cost are logged below.</p>
           <div class="cs-card">
             <h4>OpenAI</h4>
             <p class="cs-lead" anvil-name="cs_ai_status">Checking for a saved key…</p>
@@ -485,11 +488,9 @@
             </div>
             <p class="cs-msg" anvil-name="cs_ai_msg"></p>
           </div>
-        </div>
-        <div class="cs-section" data-section="ai_usage" anvil-name="cs_ai_usage">
           <div class="cs-u-head">
             <div>
-              <h3>AI usage</h3>
+              <h4 class="cs-u-title">Usage</h4>
               <p class="cs-lead">Every call this app makes to OpenAI with your key: when, what for, tokens, and cost.</p>
             </div>
             <div class="cs-seg cs-u-seg" anvil-name="cs_ai_days"></div>

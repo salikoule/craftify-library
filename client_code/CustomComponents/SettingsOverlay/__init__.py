@@ -14,7 +14,6 @@ GLOBAL_SECTIONS = (
     ("privacy", "Privacy", False),
     ("data", "Data", True),
     ("ai", "AI", False),
-    ("ai_usage", "AI usage", False),
     ("about", "About", False),
 )
 UNITS_KEY = "craftify-units"
@@ -340,8 +339,8 @@ class SettingsOverlay(SettingsOverlayTemplate):
             self._paint_notify()
         if section == "ai":
             self._paint_ai()
-        if section == "ai_usage" and mount:
-            self._paint_usage()
+            if mount:
+                self._paint_usage()
         self._paint_prefs()
 
     def _mount_extra(self, extra):
@@ -534,7 +533,7 @@ class SettingsOverlay(SettingsOverlayTemplate):
         label = _node(self, "cs_ai_status")
         if label is not None:
             if has_key:
-                label.textContent = "Key saved for this account (%s). Used when a file needs a model." % hint
+                label.textContent = "Key saved for this account (%s)." % hint
             else:
                 label.textContent = "No key saved. File reading still works from the PDF text when it can."
         box = _node(self, "cs_ai_key")
