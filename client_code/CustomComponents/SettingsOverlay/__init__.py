@@ -3,7 +3,9 @@ from anvil import *
 from anvil.js import get_dom_node, window
 import anvil.server
 import anvil.users
+import anvil.js
 from ...CraftifyUtils.theme import apply_theme, current_theme
+from ...CraftifyUtils import ai_usage_view as usage_view
 
 GLOBAL_SECTIONS = (
     ("account", "Account", False),
@@ -12,6 +14,7 @@ GLOBAL_SECTIONS = (
     ("privacy", "Privacy", False),
     ("data", "Data", True),
     ("ai", "AI", False),
+    ("ai_usage", "AI usage", False),
     ("about", "About", False),
 )
 UNITS_KEY = "craftify-units"
@@ -64,6 +67,37 @@ def _storage_set(key, value):
         window.localStorage.setItem(key, value)
     except Exception:
         pass
+
+
+def _locale():
+    locale = _storage_get(LOCALE_KEY)
+    return [locale] if locale else []
+
+
+def _js_date(iso):
+    return anvil.js.new(window.Date, iso)
+
+
+def _local_time(iso):
+    """An ISO datetime in the user's timezone, e.g. 2 Nov, 14:05."""
+    try:
+        options = {"day": "numeric", "month": "short", "hour": "2-digit", "minute": "2-digit"}
+        zone = _storage_get(TZ_KEY)
+        if zone:
+            options["timeZone"] = zone
+        return _js_date(iso).toLocaleString(_locale(), options)
+    except Exception:
+        return str(iso)[:16].replace("T", " ")
+
+
+def _local_day(label):
+    """A chart label (YYYY-MM-DD or YYYY-MM) as 2 Nov or Nov 2026."""
+    try:
+        if len(label) == 7:
+            return _js_date(label + "-01T12:00:00").toLocaleDateString(_locale(), {"month": "short", "year": "numeric"})
+        return _js_date(label + "T12:00:00").toLocaleDateString(_locale(), {"day": "numeric", "month": "short"})
+    except Exception:
+        return label
 
 
 def current_units():
@@ -182,6 +216,7 @@ class SettingsOverlay(SettingsOverlayTemplate):
             ("cs_save_notify", self._save_notify),
             ("cs_save_ai", self._save_ai),
             ("cs_clear_ai", self._clear_ai),
+            ("cs_ai_days", self._usage_period),
             ("cs_signout_device", self._sign_out),
             ("cs_theme_light", lambda e: self._set_theme("light")),
             ("cs_theme_dark", lambda e: self._set_theme("dark")),
@@ -305,6 +340,8 @@ class SettingsOverlay(SettingsOverlayTemplate):
             self._paint_notify()
         if section == "ai":
             self._paint_ai()
+        if section == "ai_usage" and mount:
+            self._paint_usage()
         self._paint_prefs()
 
     def _mount_extra(self, extra):
@@ -524,6 +561,34 @@ class SettingsOverlay(SettingsOverlayTemplate):
             return
         self._paint_ai(status)
         self._ai_msg("API key removed.")
+
+    def _paint_usage(self, days=None):
+        if days is not None:
+            self._usage_days = days
+        days = getattr(self, "_usage_days", 30)
+        seg = _node(self, "cs_ai_days")
+        if seg is not None:
+            seg.innerHTML = usage_view.periods_html(days)
+        box = _node(self, "cs_ai_report")
+        if box is None:
+            return
+        try:
+            report = anvil.server.call_s("craftify_ai_usage", days)
+        except Exception as e:
+            box.innerHTML = '<p class="cs-msg is-error">%s</p>' % usage_view.esc(str(e) or "Could not load AI usage.")
+            return
+        box.innerHTML = usage_view.report_html(report, _local_time, _local_day)
+
+    def _usage_period(self, event=None):
+        target = getattr(event, "target", None)
+        button = target.closest("[data-days]") if target is not None and hasattr(target, "closest") else None
+        if button is None:
+            return
+        try:
+            days = int(button.getAttribute("data-days"))
+        except (TypeError, ValueError):
+            return
+        self._paint_usage(days)
 
     def open(self, section=None):
         self._portal()

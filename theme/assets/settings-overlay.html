@@ -294,6 +294,40 @@
   }
   .cs-id p { margin: 0; font-size: 13px; color: var(--muted); }
   .cs-id strong { display: block; color: var(--ink); font-size: 14px; }
+  .cs-u-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .cs-u-head h3 { margin-top: 0; }
+  .cs-u-seg button { font-size: 12px; padding: 6px 11px; }
+  .cs-u-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 0 0 14px; }
+  .cs-u-tile { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--sidebar); min-width: 0; }
+  .cs-u-tile span { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .cs-u-tile strong { display: block; margin: 4px 0 2px; font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .cs-u-tile small { display: block; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
+  .cs-u-chart { margin: 0 0 16px; padding: 12px 14px 8px; border: 1px solid var(--line); border-radius: 12px; }
+  .cs-u-bars { display: flex; align-items: flex-end; gap: 2px; height: 84px; }
+  .cs-u-bars i { flex: 1; display: flex; align-items: flex-end; height: 100%; min-width: 2px; cursor: default; }
+  .cs-u-bars b { display: block; width: 100%; border-radius: 3px 3px 0 0; background: var(--accent); opacity: 0.85; }
+  .cs-u-bars i:hover b { opacity: 1; }
+  .cs-u-bars i.is-empty b { height: 2px !important; background: var(--line); }
+  .cs-u-axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--muted); }
+  .cs-u-block { margin: 0 0 16px; }
+  .cs-u-block h4 { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .cs-u-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  .cs-u-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .cs-u-table th { padding: 8px 10px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: var(--sidebar); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .cs-u-table td { padding: 8px 10px; color: var(--ink); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .cs-u-table tr:last-child td { border-bottom: 0; }
+  .cs-u-table th:not(:first-child), .cs-u-table td:not(:first-child) { text-align: right; }
+  .cs-u-calls th:nth-child(2), .cs-u-calls td:nth-child(2) { text-align: left; }
+  .cs-u-calls td { vertical-align: top; }
+  .cs-u-table em { display: block; margin-top: 2px; font-style: normal; color: var(--muted); font-size: 11px; }
+  .cs-u-ok, .cs-u-err { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .cs-u-ok { color: #047857; background: color-mix(in srgb, #10b981 14%, transparent); }
+  .cs-u-err { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); cursor: help; }
+  .cs-u-note { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  .cs-u-note a { color: var(--accent); font-weight: 650; }
+  .cs-u-empty { padding: 18px; border: 1px dashed var(--line); border-radius: 12px; font-size: 13px; color: var(--muted); }
+  .cs-u-empty strong { display: block; margin-bottom: 4px; color: var(--ink); }
+  .cs-u-empty p { margin: 0; }
 </style>
 
 <div class="cs-overlay cs-off" anvil-name="cs_root" role="presentation">
@@ -451,6 +485,16 @@
             </div>
             <p class="cs-msg" anvil-name="cs_ai_msg"></p>
           </div>
+        </div>
+        <div class="cs-section" data-section="ai_usage" anvil-name="cs_ai_usage">
+          <div class="cs-u-head">
+            <div>
+              <h3>AI usage</h3>
+              <p class="cs-lead">Every call this app makes to OpenAI with your key: when, what for, tokens, and cost.</p>
+            </div>
+            <div class="cs-seg cs-u-seg" anvil-name="cs_ai_days"></div>
+          </div>
+          <div anvil-name="cs_ai_report"><p class="cs-lead">Loading usage…</p></div>
         </div>
         <div class="cs-section" data-section="about" anvil-name="cs_about">
           <h3>About</h3>

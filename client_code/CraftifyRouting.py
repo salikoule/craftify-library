@@ -37,8 +37,9 @@ def __getattr__(name):
 
 
 def launch():
-    from .CraftifyUtils import dialogs
+    from .CraftifyUtils import dialogs, drawer
     dialogs.install()
+    drawer.install()
     router_launch()
 
 
