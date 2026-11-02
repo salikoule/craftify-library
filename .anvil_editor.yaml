@@ -28,6 +28,7 @@ unique_ids:
     CraftifyUtils.ErrorHandling: '1792756177153.6422382121195895'
     CraftifyUtils.ScrollUtils: '1792756177153.06898062868285926'
     CraftifyUtils.constants: '1792756177153.48960687593759555'
+    CraftifyUtils.dialogs: '1793605114935.435541117827556'
     CraftifyUtils.echarts_theme: '1792756177154.32503991322923065'
     CraftifyUtils.tabulator_support: '1792756177154.849920626713827'
     CraftifyUtils.theme: '1793100359516.5015644470000699'
