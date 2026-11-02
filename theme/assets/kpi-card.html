@@ -46,8 +46,8 @@
   .kc-label {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 4px;
+    gap: 8px;
+    margin-bottom: 6px;
     min-height: 16px;
   }
   .kc-icon {
@@ -59,9 +59,20 @@
     line-height: 1;
   }
   .kc-icon.is-empty { display: none; }
+  .kc-icon .material-symbols-outlined,
+  .kc-icon .fa,
+  .kc-icon .fa-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
   .kc-icon .material-symbols-outlined {
-    font-size: 18px;
-    font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 20;
+    font-size: 17px;
+    font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 20;
   }
   .kc-icon .fa,
   .kc-icon .fa-solid { font-size: 14px; }
