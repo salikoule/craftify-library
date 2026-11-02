@@ -83,9 +83,10 @@ class CraftifyLoginForm(CraftifyLoginFormTemplate):
         for component in (self.left_panel, self.home_header_card, self.login_panel):
             node = get_dom_node(component)
             node.style.minHeight = height_px
-            node.style.height = height_px
+            node.style.height = ""
             node.style.marginBottom = "0"
             node.style.boxSizing = "border-box"
+        get_dom_node(self.login_panel).style.paddingBottom = "%spx" % (strip_h + 8)
         get_dom_node(self.left_panel).style.backgroundColor = "transparent"
         get_dom_node(self.home_header_card).style.backgroundColor = "transparent"
         get_dom_node(self.left_panel).style.overflow = "hidden"
