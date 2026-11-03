@@ -105,8 +105,9 @@ def current_units():
 
 
 class SettingsOverlay(SettingsOverlayTemplate):
-    def __init__(self, extra_sections=None, **properties):
+    def __init__(self, extra_sections=None, hidden_sections=None, **properties):
         self._extra = list(extra_sections or [])
+        self._hidden = set(hidden_sections or ())
         self._section = properties.get("default_section") or "account"
         self._open = False
         self._ported = False
@@ -260,7 +261,8 @@ class SettingsOverlay(SettingsOverlayTemplate):
         extras = []
         for item in self._extra:
             extras.append((item.get("id"), item.get("label") or item.get("id"), bool(item.get("coming_soon")), True))
-        globals_ = [(section_id, label, coming_soon, False) for section_id, label, coming_soon in GLOBAL_SECTIONS]
+        globals_ = [(section_id, label, coming_soon, False) for section_id, label, coming_soon in GLOBAL_SECTIONS
+                    if section_id not in self._hidden]
         return extras + globals_
 
     def _render_nav(self):
