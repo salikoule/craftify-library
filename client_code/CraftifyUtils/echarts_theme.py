@@ -15,6 +15,14 @@ _AXIS = "#e2e8f0"
 _TOOLTIP_BG = "rgba(255,255,255,0.96)"
 _TOOLTIP_BORDER = "#e2e8f0"
 _SLICE_GAP = "#ffffff"
+_LIGHT = {
+    "_TITLE_COLOR": _TITLE_COLOR, "_MUTED": _MUTED, "_GRID": _GRID, "_AXIS": _AXIS,
+    "_TOOLTIP_BG": _TOOLTIP_BG, "_TOOLTIP_BORDER": _TOOLTIP_BORDER, "_SLICE_GAP": _SLICE_GAP,
+}
+_DARK = {
+    "_TITLE_COLOR": "#e2e8f0", "_MUTED": "#94a3b8", "_GRID": "rgba(148,163,184,0.16)", "_AXIS": "rgba(148,163,184,0.28)",
+    "_TOOLTIP_BG": "rgba(15,23,42,0.96)", "_TOOLTIP_BORDER": "#334155", "_SLICE_GAP": "#0f172a",
+}
 _TITLE_MIN_SIZE = 15
 _SUBTITLE_MIN_SIZE = 13
 _LABEL_MIN_SIZE = 13
@@ -63,6 +71,27 @@ def _nice_step(value, step, up=False):
     return int((value // size) * size)
 
 
+def _use_palette(palette):
+    global _TITLE_COLOR, _MUTED, _GRID, _AXIS, _TOOLTIP_BG, _TOOLTIP_BORDER, _SLICE_GAP
+    _TITLE_COLOR = palette["_TITLE_COLOR"]
+    _MUTED = palette["_MUTED"]
+    _GRID = palette["_GRID"]
+    _AXIS = palette["_AXIS"]
+    _TOOLTIP_BG = palette["_TOOLTIP_BG"]
+    _TOOLTIP_BORDER = palette["_TOOLTIP_BORDER"]
+    _SLICE_GAP = palette["_SLICE_GAP"]
+
+
+def _page_is_dark():
+    try:
+        from anvil.js.window import document
+        classes = document.documentElement.classList
+        return bool(classes.contains("ipac-dark") or classes.contains("craftify-theme-dark")
+                    or document.documentElement.getAttribute("data-theme") == "dark")
+    except Exception:
+        return False
+
+
 def apply_craftify_echarts_theme(options):
     """Mutate an ECharts option dict with modern defaults. Returns the same object.
 
@@ -72,6 +101,7 @@ def apply_craftify_echarts_theme(options):
     """
     if not isinstance(options, dict):
         return options
+    _use_palette(_DARK if _page_is_dark() else _LIGHT)
     opted_out = options.get(OPT_OUT_KEY) is False
     if opted_out:
         options.pop(OPT_OUT_KEY, None)
