@@ -1,0 +1,15 @@
+container:
+  event_bindings: {hide: form_hide, show: form_show}
+  properties: {html: <div class="cf-tp" anvil-name="root"></div>}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {default_event: true, name: change}
+is_package: true
+properties:
+- {default_binding_prop: true, default_value: '', name: time, type: string}
+- {default_value: 'HH:MM', name: placeholder, type: string}
+- {default_value: 5, name: minute_step, type: number}
+- {default_value: '', name: min_time, type: string}
+- {default_value: '', name: max_time, type: string}
+- {default_value: true, name: enabled, type: boolean}

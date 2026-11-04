@@ -49,6 +49,7 @@ _CSS = """
   pointer-events: none;
   font-family: Montserrat, system-ui, sans-serif;
 }
+body:has(.cf-drawer.is-open) .daterangepicker { z-index: 1045 !important; }
 html.craftify-theme-dark .cf-drawer,
 html.ipac-dark .cf-drawer,
 html[data-theme="dark"] .cf-drawer {
@@ -245,6 +246,8 @@ class Drawer:
     def _focus_first(self):
         target = self._panel.querySelector(
             ".cf-drawer-body input:not([type=hidden]), .cf-drawer-body textarea, .cf-drawer-body select")
+        if target and target.closest(".anvil-datepicker, .cf-tp"):
+            target = None
         try:
             (target or self._panel).focus()
         except Exception:

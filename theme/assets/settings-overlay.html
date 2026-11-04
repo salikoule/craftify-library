@@ -383,6 +383,8 @@
           </div>
           <div class="cs-card">
             <h4>Password</h4>
+            <form class="cs-form" onsubmit="return false">
+            <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" hidden>
             <div class="cs-field">
               <label>Current password</label>
               <input type="password" autocomplete="current-password" anvil-name="cs_old_pw">
@@ -399,6 +401,7 @@
               <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_pw">Update password</button>
               <button type="button" class="cs-btn" anvil-name="cs_reset_pw">Email a reset link</button>
             </div>
+            </form>
           </div>
           <div class="cs-card">
             <h4>Two-factor authentication <span class="cs-soon">Soon</span></h4>
@@ -479,6 +482,7 @@
           <div class="cs-card">
             <h4>OpenAI</h4>
             <p class="cs-lead" anvil-name="cs_ai_status">Checking for a saved key…</p>
+            <form class="cs-form" autocomplete="off" onsubmit="return false">
             <div class="cs-field">
               <label for="cs_ai_key">API key</label>
               <input id="cs_ai_key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-…" anvil-name="cs_ai_key">
@@ -487,6 +491,7 @@
               <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_ai">Save key</button>
               <button type="button" class="cs-btn" anvil-name="cs_clear_ai">Remove key</button>
             </div>
+            </form>
             <p class="cs-msg" anvil-name="cs_ai_msg"></p>
           </div>
           <div class="cs-u-head">
