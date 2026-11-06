@@ -1,0 +1,14 @@
+container:
+  properties: {html: <div class="cf-sp" anvil-name="root"></div>}
+  type: HtmlTemplate
+custom_component: true
+events:
+- {default_event: true, name: select}
+is_package: true
+properties:
+- {default_value: Search, name: placeholder, type: string}
+- {default_value: '', name: recent_key, type: string}
+- {default_value: 6, name: recent_limit, type: number}
+- {default_value: 2, name: min_chars, type: number}
+- {default_value: 250, name: delay_ms, type: number}
+- {default_value: true, name: shortcut, type: boolean}

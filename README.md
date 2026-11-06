@@ -9,7 +9,7 @@ Synced with Anvil cloud; consumer apps (e.g. **Cyclops**) add this repo as an **
 | Area | Contents |
 |------|----------|
 | **Theme** | `theme.css`, `tabulator_styles.css`, `standard-page.html`, `kpi-card.html`, `chart-card.html`, `craftify-shell.html` (from iPac `data-sheets.html`) |
-| **Client** | `Startup` (Tabulator modules + defaults), `CraftifyUtils`, `CraftifyLoginForm`, `CustomComponents` (AccountMenu, EChart, KpiCard, ChartCard, TimePicker, ToastyNotification) |
+| **Client** | `Startup` (Tabulator modules + defaults), `CraftifyUtils`, `CraftifyLoginForm`, `CustomComponents` (AccountMenu, EChart, KpiCard, ChartCard, TimePicker, SearchPalette, ToastyNotification) |
 | **Charts** | Apache ECharts **5.5.1 via CDN** + `CraftifyUtils.echarts_theme` + `theme/assets/echarts_theme.js` |
 | **Server** | `CraftifyAuth`, `CraftifyError.craftify_report_client_error` |
 | **Demo** | Startup form `LibraryDemo` — KPI tiles, sample Tabulator, sample EChart |
@@ -50,9 +50,25 @@ from craftify_library.CustomComponents.KpiCard import KpiCard
 from craftify_library.CustomComponents.ChartCard import ChartCard
 from craftify_library.CustomComponents.EChart import EChart
 from craftify_library.CustomComponents.TimePicker import TimePicker  # TimePicker(time="09:30", minute_step=5, min_time="06:00"); event: change
+from craftify_library.CustomComponents.SearchPalette import SearchPalette  # see "Search pop-up" below
 from tabulator.Tabulator import Tabulator
 from craftify_library.CraftifyUtils.echarts_theme import apply_craftify_echarts_theme
 ```
+
+**Search pop-up.** `SearchPalette` opens over the page from a sidebar button or Ctrl/⌘+K. Arrow keys move, Enter picks, and Esc closes. Picked hits show as Recent (kept in the browser under `recent_key`).
+
+```python
+def find(text):  # a list of hits: title, plus optional subtitle, badge, badge_class, kind, id, and any keys you need back
+    return [{"id": r["code"], "title": r["name"], "badge": r["code"], "kind": "Item", "path": "/items/" + r["code"]}
+            for r in anvil.server.call_s("search", text)]
+
+palette = SearchPalette(search=find, placeholder="Find a record", recent_key="myapp")
+palette.set_event_handler("select", lambda hit, **e: navigate(path=hit["path"]))
+self.add_component(palette)                                        # the pop-up itself (fixed over the page)
+self.menu_panel.add_component(palette.trigger(), full_width_row=True)  # "Search  ⌘K" button for the sidebar
+```
+
+Call `palette.close()` from the router's `navigate` handler. Override the colours with the `--cf-sp-*` CSS variables. Dark mode follows `ipac-dark`, `craftify-theme-dark` or `data-theme="dark"`.
 
 5. **ECharts in consumer apps:** add the same scripts to the app’s **`native_deps.head_html`** (Anvil does not always merge dependency head HTML):
 
