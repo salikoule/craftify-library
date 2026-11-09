@@ -79,7 +79,7 @@ Call `palette.close()` from the router's `navigate` handler. Override the colour
 
 Copy `theme/assets/echarts_theme.js` into the consumer theme, or rely on the library theme asset path if your dependency setup exposes it.
 
-6. Use **Standard Page** form template (`@theme:standard-page.html`) for sidebar + app bar layout.
+6. Use **Standard Page** form template (`@theme:standard-page.html`) for sidebar + app bar layout. Sidebar links are `NavLink(text=, path=, icon="fa:...")` in the `left-nav` slot. Common `fa:` names (`box`, `industry`, `chart-line`, `users`, `gear` and others listed in `craftify-full-theme.css`) are drawn as Lucide line icons; any other `fa:` name keeps its Font Awesome glyph. Put a group label between links with `<div class="cf-nav-group">Records</div>`. Colours are the `--cf-nav-*` CSS variables. The theme files are copied into each app's `theme/assets`, so copy `craftify-full-theme.css` and `craftify-theme.css` again after changing them here.
 7. For HTML-first screens (Cyclops sketch), embed `@theme:craftify-shell.html` or host static HTML in a Custom Form and match `.ds-page` / chip patterns from iPac.
 
 ## Dependencies (declared in `anvil.yaml`)
