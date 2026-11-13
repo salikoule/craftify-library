@@ -9,6 +9,7 @@ from ..CustomComponents.KpiCard import KpiCard
 from ..CustomComponents.ChartCard import ChartCard
 from ..CustomComponents.SettingsOverlay import SettingsOverlay
 from ..CraftifyUtils.echarts_theme import apply_craftify_echarts_theme
+from ..CraftifyUtils import craftify_table as cf_table
 
 
 class LibraryDemo(LibraryDemoTemplate):
@@ -46,17 +47,29 @@ class LibraryDemo(LibraryDemoTemplate):
         self.main_panel.add_component(kpi_row, full_width_row=True)
 
         table = Tabulator()
-        table.height = "220px"
-        table.columns = [
-            {"title": "ID", "field": "id", "width": 90},
-            {"title": "Name", "field": "name", "header_filter": True},
-            {"title": "Status", "field": "status", "width": 120},
-        ]
+        table.height = "280px"
+        table.options = {
+            "pagination": True,
+            "pagination_size": 10,
+            "pagination_counter": "rows",
+            "layout": "fitColumns",
+            "index": "id",
+        }
+        columns = cf_table.stamp_columns([
+            {"title": "Order", "field": "id", "width": 112, "header_filter": True, "sorter": "string"},
+            {"title": "Customer", "field": "name", "width_grow": 2, "header_filter": True},
+            {"title": "Amount", "field": "amount", "width": 110, "header_filter": True, "sorter": "number", "hoz_align": "right"},
+            {"title": "Placed", "field": "placed", "width": 130, "header_filter": True},
+            cf_table.stamp_column({"title": "Status", "field": "status", "width": 130, "header_filter": "list"},
+                                  kind="list", choices=["Active", "Draft", "Shipped"]),
+        ])
+        table.columns = columns
         table.data = [
-            {"id": "PRD-001", "name": "Sample product", "status": "Active"},
-            {"id": "PRD-002", "name": "Second row", "status": "Draft"},
-            {"id": "PRD-003", "name": "Third row", "status": "Active"},
+            {"id": "ORD-1001", "name": "Acme Corp", "amount": 420, "placed": "12 Mar 2025", "status": "Active"},
+            {"id": "ORD-1002", "name": "Beta Industries", "amount": 89, "placed": "3 Feb 2025", "status": "Draft"},
+            {"id": "ORD-1003", "name": "Cyclops SA", "amount": 1280, "placed": "1 Jan 2025", "status": "Shipped"},
         ]
+        cf_table.attach_toolbar(table, remote=False)
         self.main_panel.add_component(table, full_width_row=True)
 
         chart_card = ChartCard(

@@ -93,7 +93,11 @@
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
+  .am-ava.has-photo { color: transparent; }
   .am-email {
     min-width: 0;
     flex: 1;
@@ -116,10 +120,6 @@
 
 <div class="am-wrap" anvil-name="am_root">
   <div class="am-menu am-off" anvil-name="am_menu">
-    <button type="button" class="am-item" data-action="account" anvil-name="am_account_item">
-      <span class="am-ico"><i class="fa-solid fa-user" aria-hidden="true"></i></span>
-      Account
-    </button>
     <button type="button" class="am-item" data-action="settings" anvil-name="am_settings_item">
       <span class="am-ico"><i class="fa-solid fa-gear" aria-hidden="true"></i></span>
       Settings

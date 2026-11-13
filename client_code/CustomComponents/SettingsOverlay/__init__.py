@@ -4,8 +4,14 @@ from anvil.js import get_dom_node, window
 import anvil.server
 import anvil.users
 import anvil.js
+
+PHOTO_MAX_BYTES = 2 * 1024 * 1024
+NAME_DEBOUNCE_MS = 600
+NAME_HINT_DEFAULT = "Saves automatically on this device."
+NAME_HINT_SAVED = "Saved on this device."
 from ...CraftifyUtils.theme import apply_theme, current_theme
 from ...CraftifyUtils import ai_usage_view as usage_view
+from ...CraftifyUtils import display_name as display_name_util
 
 GLOBAL_SECTIONS = (
     ("account", "Account", False),
@@ -17,7 +23,7 @@ GLOBAL_SECTIONS = (
     ("about", "About", False),
 )
 UNITS_KEY = "craftify-units"
-NAME_KEY = "craftify-display-name"
+NAME_KEY = display_name_util.NAME_KEY
 TZ_KEY = "craftify-timezone"
 LOCALE_KEY = "craftify-locale"
 NOTIFY_KEYS = (
@@ -105,9 +111,14 @@ def current_units():
 
 
 class SettingsOverlay(SettingsOverlayTemplate):
-    def __init__(self, extra_sections=None, hidden_sections=None, **properties):
+    def __init__(self, extra_sections=None, hidden_sections=None, account_mfa_build=None, **properties):
         self._extra = list(extra_sections or [])
         self._hidden = set(hidden_sections or ())
+        self._account_mfa_build = account_mfa_build
+        self._account_mfa_done = False
+        self._name_timer = None
+        self._name_hint_timer = None
+        self._name_saved_value = None
         self._section = properties.get("default_section") or "account"
         self._open = False
         self._ported = False
@@ -211,7 +222,6 @@ class SettingsOverlay(SettingsOverlayTemplate):
         pairs = (
             ("cs_save_pw", self._change_password),
             ("cs_reset_pw", self._email_reset),
-            ("cs_save_name", self._save_name),
             ("cs_save_regional", self._save_regional),
             ("cs_save_notify", self._save_notify),
             ("cs_save_ai", self._save_ai),
@@ -223,11 +233,20 @@ class SettingsOverlay(SettingsOverlayTemplate):
             ("cs_theme_system", lambda e: self._set_theme("system")),
             ("cs_units_metric", lambda e: self._set_units("metric")),
             ("cs_units_imperial", lambda e: self._set_units("imperial")),
+            ("cs_photo_upload", self._photo_open),
+            ("cs_photo_remove", self._photo_remove),
         )
         for name, handler in pairs:
             node = _node(self, name)
             if node is not None:
                 node.addEventListener("click", handler)
+        photo_inp = _node(self, "cs_photo_inp")
+        if photo_inp is not None:
+            photo_inp.addEventListener("change", self._photo_pick)
+        display = _node(self, "cs_display")
+        if display is not None:
+            display.addEventListener("input", self._on_display_input)
+            display.addEventListener("blur", self._on_display_blur)
         window.document.addEventListener("keydown", self._on_key)
         self._fill_selects()
         self._bound = True
@@ -337,6 +356,7 @@ class SettingsOverlay(SettingsOverlayTemplate):
             self._mounted_id = None
         if section == "account":
             self._fill_account()
+            self._mount_account_mfa()
         if section == "notifications":
             self._paint_notify()
         if section == "ai":
@@ -373,6 +393,21 @@ class SettingsOverlay(SettingsOverlayTemplate):
         except Exception:
             return ""
 
+    def _mount_account_mfa(self):
+        if self._account_mfa_done or not self._account_mfa_build:
+            return
+        try:
+            child = self._account_mfa_build()
+        except Exception:
+            child = None
+        if child is not None:
+            try:
+                self.add_component(child, slot="account_mfa", full_width_row=True)
+            except Exception:
+                pass
+            else:
+                self._account_mfa_done = True
+
     def _fill_account(self):
         email = self._user_email()
         name = _storage_get(NAME_KEY) or (email.split("@")[0] if email else "Signed in")
@@ -381,16 +416,17 @@ class SettingsOverlay(SettingsOverlayTemplate):
             email_box.value = email
         display = _node(self, "cs_display")
         if display is not None:
-            display.value = _storage_get(NAME_KEY)
+            stored = _storage_get(NAME_KEY)
+            display.value = stored
+            self._name_saved_value = (stored or "").strip()
+        self._set_name_hint(NAME_HINT_DEFAULT)
         label = _node(self, "cs_display_label")
         if label is not None:
             label.textContent = name
         email_label = _node(self, "cs_email_label")
         if email_label is not None:
             email_label.textContent = email
-        avatar = _node(self, "cs_avatar")
-        if avatar is not None:
-            avatar.textContent = (name[:1] or "?").upper()
+        self._paint_avatar(name)
         google = _node(self, "cs_google_status")
         if google is not None:
             connected = ""
@@ -412,12 +448,167 @@ class SettingsOverlay(SettingsOverlayTemplate):
         node.textContent = text or ""
         node.classList.toggle("is-error", bool(error))
 
-    def _save_name(self, event=None):
+    def _set_name_hint(self, text, saved=False):
+        node = _node(self, "cs_display_hint")
+        if node is None:
+            return
+        node.textContent = text or NAME_HINT_DEFAULT
+        node.classList.toggle("is-ok", bool(saved))
+
+    def _clear_name_timer(self):
+        timer = getattr(self, "_name_timer", None)
+        if timer is None:
+            return
+        try:
+            window.clearTimeout(timer)
+        except Exception:
+            pass
+        self._name_timer = None
+
+    def _flash_name_saved(self):
+        hint_timer = getattr(self, "_name_hint_timer", None)
+        if hint_timer is not None:
+            try:
+                window.clearTimeout(hint_timer)
+            except Exception:
+                pass
+        self._set_name_hint(NAME_HINT_SAVED, saved=True)
+
+        def revert():
+            self._set_name_hint(NAME_HINT_DEFAULT, saved=False)
+            self._name_hint_timer = None
+
+        try:
+            self._name_hint_timer = window.setTimeout(revert, 2000)
+        except Exception:
+            pass
+
+    def _save_display_name(self, force=False):
         box = _node(self, "cs_display")
-        name = getattr(box, "value", "") if box is not None else ""
-        _storage_set(NAME_KEY, (name or "").strip())
-        self._fill_account()
-        self._account_msg("Display name saved on this device.")
+        name = (getattr(box, "value", "") if box is not None else "").strip()
+        previous = getattr(self, "_name_saved_value", None)
+        if not force and name == previous:
+            return
+        display_name_util.write(name)
+        self._name_saved_value = name
+        label = _node(self, "cs_display_label")
+        if label is not None:
+            email = self._user_email()
+            label.textContent = name or (email.split("@")[0] if email else "Signed in")
+        self._paint_avatar(name or None)
+        self._flash_name_saved()
+        self.raise_event("display_name_changed")
+
+    def _on_display_input(self, event=None):
+        self._clear_name_timer()
+        try:
+            self._name_timer = window.setTimeout(lambda: self._save_display_name(), NAME_DEBOUNCE_MS)
+        except Exception:
+            pass
+
+    def _on_display_blur(self, event=None):
+        self._clear_name_timer()
+        self._save_display_name()
+
+    def _photo_url(self, media):
+        if media is None:
+            return ""
+        try:
+            url = getattr(media, "url", None)
+            return url or ""
+        except Exception:
+            return ""
+
+    def _paint_avatar(self, name=None):
+        avatar = _node(self, "cs_avatar")
+        if avatar is None:
+            return
+        if name is None:
+            email = self._user_email()
+            name = _storage_get(NAME_KEY) or (email.split("@")[0] if email else "Signed in")
+        media = None
+        try:
+            media = anvil.server.call("craftify_profile_photo_get")
+        except Exception:
+            media = None
+        url = self._photo_url(media)
+        remove_btn = _node(self, "cs_photo_remove")
+        sep = _node(self, "cs_photo_sep")
+        if url:
+            avatar.textContent = ""
+            avatar.style.backgroundImage = "url(%s)" % url
+            avatar.classList.add("has-photo")
+            if remove_btn is not None:
+                remove_btn.style.display = ""
+            if sep is not None:
+                sep.style.display = ""
+            return
+        avatar.style.backgroundImage = ""
+        avatar.classList.remove("has-photo")
+        avatar.textContent = (name[:1] or "?").upper()
+        if remove_btn is not None:
+            remove_btn.style.display = "none"
+        if sep is not None:
+            sep.style.display = "none"
+
+    def _photo_open(self, event=None):
+        inp = _node(self, "cs_photo_inp")
+        if inp is not None:
+            inp.click()
+
+    def _to_media(self, js_file):
+        if js_file is None:
+            return None
+        try:
+            from anvil.js import to_media
+            return to_media(js_file)
+        except Exception:
+            pass
+        from anvil import BlobMedia
+        return BlobMedia(
+            getattr(js_file, "type", None) or "application/octet-stream",
+            js_file,
+            name=getattr(js_file, "name", None) or "profile-photo",
+        )
+
+    def _photo_pick(self, event=None):
+        inp = _node(self, "cs_photo_inp")
+        files = getattr(inp, "files", None) if inp is not None else None
+        js_file = files[0] if files is not None and len(files) else None
+        if inp is not None:
+            inp.value = ""
+        if js_file is None:
+            return
+        size = int(getattr(js_file, "size", 0) or 0)
+        if size > PHOTO_MAX_BYTES:
+            self._account_msg("Use an image up to 2 MB.", error=True)
+            return
+        content_type = (getattr(js_file, "type", None) or "").split(";")[0].strip().lower()
+        if content_type and content_type not in ("image/jpeg", "image/png", "image/webp"):
+            self._account_msg("Use a JPEG, PNG, or WebP image.", error=True)
+            return
+        media = self._to_media(js_file)
+        if media is None:
+            self._account_msg("That image could not be read.", error=True)
+            return
+        try:
+            anvil.server.call("craftify_profile_photo_save", media)
+        except Exception as error:
+            self._account_msg(str(error) or "Could not save the profile photo.", error=True)
+            return
+        self._paint_avatar()
+        self._account_msg("Profile photo updated.")
+        self.raise_event("profile_photo_changed")
+
+    def _photo_remove(self, event=None):
+        try:
+            anvil.server.call("craftify_profile_photo_clear")
+        except Exception as error:
+            self._account_msg(str(error) or "Could not remove the profile photo.", error=True)
+            return
+        self._paint_avatar()
+        self._account_msg("Profile photo removed.")
+        self.raise_event("profile_photo_changed")
 
     def _save_regional(self, event=None):
         tz = _node(self, "cs_timezone")

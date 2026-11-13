@@ -6,6 +6,8 @@ custom_component: true
 events:
 - {name: opened}
 - {name: closed}
+- {name: profile_photo_changed}
+- {name: display_name_changed}
 is_package: true
 properties:
 - {default_value: Craftify, name: app_name, type: string}

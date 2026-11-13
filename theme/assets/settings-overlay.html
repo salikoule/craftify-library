@@ -217,6 +217,14 @@
     background: var(--panel);
   }
   .cs-field input[readonly] { color: var(--muted); background: var(--sidebar); }
+  .cs-field-hint {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  .cs-field-hint.is-ok { color: var(--accent); }
+  .cs-field-spaced { margin-bottom: 22px; }
   .cs-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .cs-btn {
     display: inline-flex;
@@ -278,10 +286,32 @@
   .cs-app { min-height: 100%; }
   .cs-id {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
     margin-bottom: 16px;
   }
+  .cs-id-meta { min-width: 0; flex: 1; }
+  .cs-photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 6px;
+  }
+  .cs-photo-link {
+    border: 0;
+    padding: 0;
+    background: none;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .cs-photo-link:hover { text-decoration: underline; }
+  .cs-photo-link.is-danger { color: var(--danger); }
+  .cs-photo-link.is-danger:hover { color: var(--danger); }
+  .cs-photo-sep { font-size: 12px; color: var(--muted); user-select: none; }
   .cs-ava {
     width: 48px;
     height: 48px;
@@ -292,6 +322,19 @@
     place-items: center;
     font-weight: 700;
     font-size: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex: 0 0 auto;
+  }
+  .cs-ava.has-photo { color: transparent; }
+  .cs-photo-inp {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
   }
   .cs-id p { margin: 0; font-size: 13px; color: var(--muted); }
   .cs-id strong { display: block; color: var(--ink); font-size: 14px; }
@@ -351,21 +394,25 @@
           <p class="cs-lead">Your sign-in identity and preferences on this workspace.</p>
           <div class="cs-id">
             <div class="cs-ava" anvil-name="cs_avatar">?</div>
-            <div>
+            <div class="cs-id-meta">
               <strong anvil-name="cs_display_label">Signed in</strong>
               <p anvil-name="cs_email_label"></p>
+              <input type="file" class="cs-photo-inp" accept="image/jpeg,image/png,image/webp" anvil-name="cs_photo_inp">
+              <div class="cs-photo-actions">
+                <button type="button" class="cs-photo-link" anvil-name="cs_photo_upload">Upload photo</button>
+                <span class="cs-photo-sep" aria-hidden="true" anvil-name="cs_photo_sep">·</span>
+                <button type="button" class="cs-photo-link is-danger" anvil-name="cs_photo_remove">Remove</button>
+              </div>
             </div>
           </div>
           <div class="cs-field">
             <label for="cs_email">Email</label>
             <input id="cs_email" type="email" readonly anvil-name="cs_email">
           </div>
-          <div class="cs-field">
+          <div class="cs-field cs-field-spaced">
             <label for="cs_display">Display name</label>
             <input id="cs_display" type="text" maxlength="80" placeholder="How you appear in this app" anvil-name="cs_display">
-          </div>
-          <div class="cs-actions">
-            <button type="button" class="cs-btn cs-btn-primary" anvil-name="cs_save_name">Save display name</button>
+            <p class="cs-field-hint" anvil-name="cs_display_hint">Saves automatically on this device.</p>
           </div>
           <div class="cs-card">
             <h4>Regional preferences</h4>
@@ -404,8 +451,8 @@
             </form>
           </div>
           <div class="cs-card">
-            <h4>Two-factor authentication <span class="cs-soon">Soon</span></h4>
-            <p class="cs-lead" style="margin-bottom:0">Authenticator-app codes will live here. Anvil Users does not expose TOTP yet.</p>
+            <h4>Two-factor authentication</h4>
+            <div class="cs-lead" anvil-slot="account_mfa" anvil-name="cs_account_mfa"></div>
           </div>
           <div class="cs-card">
             <h4>Connected accounts</h4>

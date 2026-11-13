@@ -2,12 +2,10 @@ from ._anvil_designer import AccountMenuTemplate
 from routing import router
 from anvil.js import get_dom_node
 from anvil.js.window import setTimeout
+import anvil.server
 import anvil.users
 
-
-def _initials(email):
-    text = (email or "").strip()
-    return text[:1].upper() if text else "?"
+from ...CraftifyUtils import display_name as display_name_util
 
 
 def _closest(node, selector):
@@ -84,6 +82,40 @@ class AccountMenu(AccountMenuTemplate):
             return
         root.ownerDocument.addEventListener("click", self._close_if_outside)
 
+    def refresh_identity(self):
+        self._render()
+
+    def refresh_avatar(self):
+        self.refresh_identity()
+
+    def _photo_url(self, media):
+        if media is None:
+            return ""
+        try:
+            return getattr(media, "url", None) or ""
+        except Exception:
+            return ""
+
+    def _paint_avatar(self, node):
+        media = None
+        try:
+            media = anvil.server.call("craftify_profile_photo_get")
+        except Exception:
+            media = None
+        url = self._photo_url(media)
+        if url:
+            node.textContent = ""
+            node.style.backgroundImage = "url(%s)" % url
+            node.style.backgroundSize = "cover"
+            node.style.backgroundPosition = "center"
+            node.classList.add("has-photo")
+            return
+        node.style.backgroundImage = ""
+        node.style.backgroundSize = ""
+        node.style.backgroundPosition = ""
+        node.classList.remove("has-photo")
+        node.textContent = display_name_util.initials(self._email)
+
     def _render(self):
         email_node = self._node("am_email")
         initials_node = self._node("am_initials")
@@ -92,15 +124,13 @@ class AccountMenu(AccountMenuTemplate):
             email_node = host.querySelector(".am-email")
             initials_node = host.querySelector(".am-ava")
         if email_node is not None:
-            email_node.textContent = self._email
+            label = display_name_util.chip_label(self._email)
+            email_node.textContent = label
             email_node.title = self._email
         if initials_node is not None:
-            initials_node.textContent = _initials(self._email)
-        account = self._node("am_account_item") or self._node("am_profile_item")
+            self._paint_avatar(initials_node)
         settings = self._node("am_settings_item")
         logout = self._node("am_logout_item")
-        if account is not None:
-            account.classList.toggle("am-off", not self._show_profile)
         if settings is not None:
             settings.classList.toggle("am-off", not self._show_profile)
         if logout is not None:
@@ -128,9 +158,6 @@ class AccountMenu(AccountMenuTemplate):
         action = action_btn.getAttribute("data-action")
         if action == "settings":
             self.raise_event("settings_click")
-            self.raise_event("profile_click")
-        elif action == "account":
-            self.raise_event("settings_click", section="account")
             self.raise_event("profile_click")
         elif action == "profile":
             self.raise_event("settings_click", section="account")

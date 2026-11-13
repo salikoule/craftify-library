@@ -6,6 +6,7 @@
 Horizontal repeating panel
 **/
 @import "_/theme/tabulator_styles.css";
+@import "_/theme/craftify-table.css";
 
 .craftify-echart-host {
   width: 100%;
