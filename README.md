@@ -82,6 +82,8 @@ Copy `theme/assets/echarts_theme.js` into the consumer theme, or rely on the lib
 6. Use **Standard Page** form template (`@theme:standard-page.html`) for sidebar + app bar layout. Sidebar links are `NavLink(text=, path=, icon="fa:...")` in the `left-nav` slot. Common `fa:` names (`box`, `industry`, `chart-line`, `users`, `gear` and others listed in `craftify-full-theme.css`) are drawn as Lucide line icons; any other `fa:` name keeps its Font Awesome glyph. Put a group label between links with `<div class="cf-nav-group">Records</div>`. Colours are the `--cf-nav-*` CSS variables. The theme files are copied into each app's `theme/assets`, so copy `craftify-full-theme.css` and `craftify-theme.css` again after changing them here.
 7. For HTML-first screens (Cyclops sketch), embed `@theme:craftify-shell.html` or host static HTML in a Custom Form and match `.ds-page` / chip patterns from iPac.
 
+A plant-records app keeps its screens in the app. Group that client code as `shell` (sign-in and the frame), `pages` (the shared record form and the screen code), `live` (screens that refresh while open), `session`, `account`, and `ui`. The live floor stays a page at `/floor`. Move the refresh timer into `CraftifyUtils` only when a second app needs it.
+
 ## Dependencies (declared in `anvil.yaml`)
 
 - **Anvil Extras** `v3.6.3`

@@ -50,6 +50,11 @@ def stamp_column(column, *, kind="text", choices=None):
         column["header_filter_params"] = column.get("header_filter_params") or params
         return column
 
+    if kind == "plain":
+        column["header_filter"] = "input"
+        column["header_filter_params"] = filter_params("")
+        return column
+
     if kind == "compare":
         column["header_filter"] = "input"
         column["header_filter_params"] = filter_params("")
@@ -99,11 +104,13 @@ def stamp_columns(columns, field_hints=None):
             else:
                 stamped.append(column)
             continue
-        if field in choices:
+        if column.get("filter_kind") in ("plain", "text", "compare"):
+            kind = column["filter_kind"]
+        elif field in choices:
             kind = "list"
         elif field in DATE_FIELDS or column.get("header_filter_placeholder"):
             kind = "date"
-        elif field in COMPARE_FIELDS or column.get("filter_kind") == "compare":
+        elif field in COMPARE_FIELDS:
             kind = "compare"
         elif column.get("sorter") == "number":
             kind = "number"
