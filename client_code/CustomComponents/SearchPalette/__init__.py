@@ -148,10 +148,14 @@ def _install_css():
 
 
 def _on_document_key(event):
+    """A browser autofill keydown is a plain event, with no key and no modifier."""
     owner = _SHORTCUT_OWNER[0]
     if owner is None:
         return
-    if (event.metaKey or event.ctrlKey) and str(event.key or "").lower() == "k":
+    meta = getattr(event, "metaKey", False)
+    ctrl = getattr(event, "ctrlKey", False)
+    key = getattr(event, "key", None)
+    if (meta or ctrl) and str(key or "").lower() == "k":
         event.preventDefault()
         owner.toggle()
 
@@ -271,7 +275,9 @@ class SearchPalette(SearchPaletteTemplate):
             self._render_message('No results for <strong>"%s"</strong>' % _esc(text), html=True)
 
     def _on_key(self, event):
-        key = event.key
+        key = getattr(event, "key", None)
+        if not key:
+            return
         if key == "Escape":
             event.preventDefault()
             self.close()
