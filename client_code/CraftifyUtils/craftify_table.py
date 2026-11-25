@@ -152,6 +152,12 @@ def stamp_column(column, *, kind="text", choices=None):
     column = _public_column(column)
     if column.get("header_filter") is False or column.get("field") == "edit":
         return column
+    if callable(column.get("header_filter")):
+        classes = [token for token in (column.get("css_class") or "").split() if token]
+        if "cf-filter-col" not in classes:
+            classes.append("cf-filter-col")
+        column["css_class"] = " ".join(classes)
+        return column
     classes = [token for token in (column.get("css_class") or "").split() if token]
     if "cf-filter-col" not in classes:
         classes.append("cf-filter-col")
@@ -951,8 +957,8 @@ def attach_filter_clears(table):
     _register_table_built(table, on_built)
 
 
-def attach_toolbar(table, *, remote=False, on_clear=None, search_placeholder="Search rows…"):
-    """Toolbar above the grid for local search. Each filter clears itself."""
+def attach_toolbar(table, *, remote=False, on_clear=None, search_placeholder="Search rows…", search=True):
+    """Toolbar above a local grid. ``search`` adds the row search. Each column filter clears itself."""
 
     def on_built(**event_args):
         host, root = _tabulator_root(table)
@@ -965,7 +971,7 @@ def attach_toolbar(table, *, remote=False, on_clear=None, search_placeholder="Se
             table.role = TABLE_ROLE
         except Exception:
             pass
-        if remote:
+        if remote or not search:
             return
 
         doc = window.document
